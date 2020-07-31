@@ -9,15 +9,15 @@
   
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="不仅一番寒彻骨，怎得梅花扑鼻香 我的随笔Create a new post1$ hexo new &quot;My New Post&quot;  More info: Writing Run server1$ hexo server  More info: Server Generate static files1$ hexo generate  More info: Generating Deploy to re">
+  <meta name="description" content="不仅一番寒彻骨，怎得梅花扑鼻香 我的随笔动态操作DOM的方法1234567891011121314151617181920212223241.document.createelement：创建一个元素2.appendchild：向容器的末尾新增一个元素元素.appendchild（子元素）3.insertbefore：在那个元素之前插入新元素4.removeChild删除子节点父元素.remove">
 <meta property="og:type" content="article">
 <meta property="og:title" content="做个俗人，贪财好色">
 <meta property="og:url" content="http://yoursite.com/2020/07/27/hello-world/index.html">
 <meta property="og:site_name" content="社会小安哥">
-<meta property="og:description" content="不仅一番寒彻骨，怎得梅花扑鼻香 我的随笔Create a new post1$ hexo new &quot;My New Post&quot;  More info: Writing Run server1$ hexo server  More info: Server Generate static files1$ hexo generate  More info: Generating Deploy to re">
+<meta property="og:description" content="不仅一番寒彻骨，怎得梅花扑鼻香 我的随笔动态操作DOM的方法1234567891011121314151617181920212223241.document.createelement：创建一个元素2.appendchild：向容器的末尾新增一个元素元素.appendchild（子元素）3.insertbefore：在那个元素之前插入新元素4.removeChild删除子节点父元素.remove">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-07-27T14:15:09.653Z">
-<meta property="article:modified_time" content="2020-07-31T01:38:45.308Z">
+<meta property="article:modified_time" content="2020-07-31T14:29:47.395Z">
 <meta property="article:author" content="纪安">
 <meta name="twitter:card" content="summary">
   
@@ -207,18 +207,11 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>不仅一番寒彻骨，怎得梅花扑鼻香</p>
-<h2 id="我的随笔"><a href="#我的随笔" class="headerlink" title="我的随笔"></a>我的随笔</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<h2 id="我的随笔"><a href="#我的随笔" class="headerlink" title="我的随笔"></a>我的随笔</h2><h3 id="动态操作DOM的方法"><a href="#动态操作DOM的方法" class="headerlink" title="动态操作DOM的方法"></a>动态操作DOM的方法</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">1.document.createelement：</span><br><span class="line">创建一个元素</span><br><span class="line">2.appendchild：</span><br><span class="line">向容器的末尾新增一个元素</span><br><span class="line">元素.appendchild（子元素）</span><br><span class="line">3.insertbefore：</span><br><span class="line">在那个元素之前插入新元素</span><br><span class="line">4.removeChild</span><br><span class="line">删除子节点</span><br><span class="line">父元素.removeChild（删除的子元素）</span><br><span class="line">5.replaceChild</span><br><span class="line">替换元素</span><br><span class="line">父元素.replaceChild（a新元素，first老元素）</span><br><span class="line">6.cloneNode</span><br><span class="line">克隆节点，将节点克隆一份，默认flase，进行浅克隆，</span><br><span class="line">7.setAttribute：</span><br><span class="line">设置行间属性，</span><br><span class="line">元素.语法（“属性名”，“属性值”）</span><br><span class="line">removeAttribute：删除行间属性</span><br><span class="line">8.classlist</span><br><span class="line">新增，删除 ，替换 class名字</span><br><span class="line">元素.语法.remove（名字）</span><br><span class="line">元素.语法.add（名字）</span><br><span class="line">元素.语法.replace（“新元素”，’（被替换元素）‘）</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<h3 id="五大设计模式"><a href="#五大设计模式" class="headerlink" title="五大设计模式"></a>五大设计模式</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">单例模式</span><br><span class="line"></span><br><span class="line">把描述想同事物的属性放到了一个对象中，避免了全局变量的干扰</span><br><span class="line"></span><br><span class="line">高级单例模式</span><br><span class="line"></span><br><span class="line">用一个闭包也就是自执行函数把公共的变量和运用该变量的函数封装到一起，<span class="built_in">return</span>出一个数组并用一个变量接收；jqurry源码，react源码，vue源码。都是高级单例模式封装的。</span><br><span class="line"></span><br><span class="line">工厂模式</span><br><span class="line"></span><br><span class="line">把实现同一个功能的代码放到一个函数中，执行时只要执行这个函数就可以。减少了代码的冗余；实现高聚合‘低耦合，这也叫做函数的封装</span><br><span class="line"></span><br><span class="line">构造函数模式</span><br><span class="line"></span><br><span class="line">new：解决了私有属性问题，他会在代码执行解析前，创建一个空对象；并且让函数中的this指向这个对象，当代码执行完，会默认返回this指向的对象。</span><br><span class="line"></span><br><span class="line">原型模式</span><br><span class="line"></span><br><span class="line">解决了公共属性的问题：每个实例都是有该类new出来的，所以该类所属的原型上添加函数或者变量，即可解决公共属性问题</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 
       
     </div>
@@ -226,6 +219,20 @@
   </div>
   
     
+<nav id="article-nav">
+  
+    <a href="/2020/07/31/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B%E4%BC%98%E7%BC%BA%E7%82%B9%E6%80%BB%E7%BB%93/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">&lt;</strong>
+      <div class="article-nav-title">
+        
+          数据类型检测优缺点总结
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
   
 </article>
 

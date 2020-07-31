@@ -169,6 +169,262 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-深度克隆详解以及实现" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/07/31/%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86%E8%AF%A6%E8%A7%A3%E4%BB%A5%E5%8F%8A%E5%AE%9E%E7%8E%B0/" class="article-date">
+  	<time datetime="2020-07-31T14:32:01.566Z" itemprop="datePublished">2020-07-31</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/31/%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86%E8%AF%A6%E8%A7%A3%E4%BB%A5%E5%8F%8A%E5%AE%9E%E7%8E%B0/">
+        深度克隆详解以及实现
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="浅拷贝的4种方法"><a href="#浅拷贝的4种方法" class="headerlink" title="浅拷贝的4种方法"></a>浅拷贝的4种方法</h3><ul>
+<li><strong><code>直接赋值</code></strong>：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let  obj&#x3D;&#123;username:&quot;kebi&quot;,age:18&#125;;</span><br><span class="line"></span><br><span class="line">      let   obj1&#x3D;obj;</span><br><span class="line"></span><br><span class="line">     修改obj1的数据会影响obj的数据，所以是浅拷贝</span><br></pre></td></tr></table></figure></li>
+<li><strong><code>Object.assign()</code></strong>：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let   obj2&#x3D;Object.assign(obj);</span><br><span class="line"></span><br><span class="line">    将源对象的属性赋值到目标对象上，此时obj2就有obj中的属性，修改obj2会影响原来的数据</span><br></pre></td></tr></table></figure></li>
+<li><strong><code>Array.prototype.concat()</code></strong>：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let  arr&#x3D;[1,2,3,4,&#123;username:&quot;kebi&quot;,age:18&#125;];</span><br><span class="line"></span><br><span class="line">   let  arr1&#x3D;arr.concat()  &#x2F;&#x2F; concat是连接数组，如果不传参，则表示复制原数组的数据到目标数组中</span><br><span class="line"></span><br><span class="line">  注意：使用此方法时，数组中的基本数据类型的数据照样是生成一份新数据拷贝到新数组中，所以修改新数组的基本数据类型的数据不会影响原数组，如果修改数组中的对象，同样拷贝的是一份对象的引用到新数组中，所以修改新数组的对象会直接影响原来数组的对象数据。这跟直接赋值有一定的区别</span><br></pre></td></tr></table></figure></li>
+<li><strong><code>Array.prototype.slice()</code></strong>：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let  arr2&#x3D;arr.slice();  &#x2F;&#x2F;slice是截取数组或者字符串，不传参表示默认全部</span><br></pre></td></tr></table></figure></li>
+<li><strong><code>Array.prototype.slice()</code></strong>：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let  obj&#x3D;&#123;username:&quot;kebi&quot;,age:18&#125;;</span><br><span class="line"></span><br><span class="line">      let   obj1&#x3D;obj;</span><br><span class="line"></span><br><span class="line">     修改obj1的数据会影响obj的数据，所以是浅拷贝</span><br></pre></td></tr></table></figure>
+<h3 id="深克隆的2种方法"><a href="#深克隆的2种方法" class="headerlink" title="深克隆的2种方法"></a>深克隆的2种方法</h3></li>
+<li><strong><code>Json.parse(Json.Stringfy())</code></strong>：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let arr3&#x3D;JSON.parse(JSON.stringify(arr));</span><br><span class="line"></span><br><span class="line">   &#x2F;&#x2F;先把原数组转换为json字符串，变为基本数据类型，完全生成一份新数据，然后把新数据转换为js原数组，就利用了这一点，实现了深拷贝</span><br></pre></td></tr></table></figure></li>
+<li><strong><code>下面是实现深度克隆的方法：递归</code></strong>：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 实现深度克隆----对象&#x2F;数组</span><br><span class="line">  function checkedType(target) &#123;</span><br><span class="line">      return Object.prototype.toString.call(target).slice(8,-1); &#x2F;&#x2F;返回检测的数据类型</span><br><span class="line">  &#125;</span><br><span class="line">  function clone(target) &#123;</span><br><span class="line">      &#x2F;&#x2F;判断拷贝的数据类型</span><br><span class="line">      &#x2F;&#x2F;初始化变量result 成为最终克隆的数据</span><br><span class="line">      let result,targetType&#x3D;checkedType(target);</span><br><span class="line">      if(targetType &#x3D;&#x3D;&#x3D; &#39;Object&#39;)&#123;</span><br><span class="line">          result &#x3D; &#123;&#125;</span><br><span class="line">      &#125;else if(targetType &#x3D;&#x3D;&#x3D; &#39;Array&#39;)&#123;</span><br><span class="line">          result &#x3D; []</span><br><span class="line">      &#125;else&#123;</span><br><span class="line">          return target;</span><br><span class="line">      &#125;</span><br><span class="line">      &#x2F;&#x2F;遍历目标数据</span><br><span class="line">      for(let i in target)&#123;</span><br><span class="line">          &#x2F;&#x2F;获取遍历数据结构的每一项值</span><br><span class="line">          let value &#x3D; target[i];</span><br><span class="line">          &#x2F;&#x2F;判断目标结构里的每一项值是否存在对象&#x2F;数组</span><br><span class="line">          if(checkedType(value) &#x3D;&#x3D;&#x3D; &#39;Object&#39; || checkedType(value) &#x3D;&#x3D;&#x3D; &#39;Array&#39;)&#123;</span><br><span class="line">              &#x2F;&#x2F;继续遍历获取到的value值</span><br><span class="line">             result[i]&#x3D;clone(value);</span><br><span class="line">          &#125;else&#123; &#x2F;&#x2F;获取到的value值是基本的数据类型或者是函数</span><br><span class="line">              result[i]&#x3D;value;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      return result;</span><br><span class="line">  &#125;</span><br><span class="line">  let arr&#x3D;[1,2,&#123;username:&#39;kebi&#39;,age:18&#125;];</span><br><span class="line">  let arr1&#x3D;clone(arr);</span><br><span class="line">  console.log(arr1);   </span><br><span class="line">  arr1[2].username&#x3D;&#39;gmx&#39;;</span><br><span class="line">  console.log(arr,arr1);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-面向对象原型链与与继承" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/07/31/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%8E%9F%E5%9E%8B%E9%93%BE%E4%B8%8E%E4%B8%8E%E7%BB%A7%E6%89%BF/" class="article-date">
+  	<time datetime="2020-07-31T14:26:28.835Z" itemprop="datePublished">2020-07-31</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/31/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%8E%9F%E5%9E%8B%E9%93%BE%E4%B8%8E%E4%B8%8E%E7%BB%A7%E6%89%BF/">
+        面向对象原型链与与继承
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="原型三句大拿（记住这三句，包你一通到底）"><a href="#原型三句大拿（记住这三句，包你一通到底）" class="headerlink" title="原型三句大拿（记住这三句，包你一通到底）"></a>原型三句大拿（记住这三句，包你一通到底）</h3><ul>
+<li><strong>每个函数天生自带一个prototype属性，这个属性的只是一个对象</strong></li>
+<li><strong>prototype的属性值天生自带一个constructor属性，其属性值就是当前原型所属的类</strong></li>
+<li><strong>每一个实例都天生自带–proto–属性，这个属性的属性值指向当前实例所属类的原型</strong><h3 id="原型链形成"><a href="#原型链形成" class="headerlink" title="原型链形成"></a>原型链形成</h3></li>
+</ul>
+<p><strong>当获取对象的属性名对应的属性值时，先找自己的私有属性；如果没有回默认通过<strong>proto</strong>向当前类的原型查找。如果原型也不存在，那么会通过原型的<strong>proto</strong>向继续向上寻找，知道找到object的原型位置，如果也没有，那么就会输出undefined；这样一级一级向上寻找，就会形成原型链。</strong></p>
+<h3 id="四大继承模式"><a href="#四大继承模式" class="headerlink" title="四大继承模式"></a>四大继承模式</h3><ul>
+<li><strong><code>原型模式</code></strong>：<strong>把类A产生的实例赋值给类B的原型，那么类b的实例就可以使用a的私有属性和共有属性。这种继承方式就是原型继承。</strong></li>
+<li><strong><code>中间类继承</code>：直接更改当前对象的proto指向一个类的原型，那么这个对象就可以使用原型上的方法。</strong></li>
+<li><strong><code>call组合继承</code>：继承的目的，让类a产生的实例可以使用类b的私有属性</strong></li>
+<li><strong><code>寄生组合继承</code>：通过call继承了私有属性，结合object.create（）他会创建一个空对象，并让这个空对象指向了传进来的第一个参数，让他指向被继承者的原型</strong></li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-this指向问题" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/07/31/this%E6%8C%87%E5%90%91%E9%97%AE%E9%A2%98/" class="article-date">
+  	<time datetime="2020-07-31T14:23:42.411Z" itemprop="datePublished">2020-07-31</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/31/this%E6%8C%87%E5%90%91%E9%97%AE%E9%A2%98/">
+        this指向问题
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="this指向问题"><a href="#this指向问题" class="headerlink" title="this指向问题"></a>this指向问题</h3><ul>
+<li>在全局作用域下，this 和window指向同一个空间地址。</li>
+<li>看函数执行前有没有点“.‘如果没有就指向window。如果有，那么点前面是谁，他就指向谁</li>
+<li>给元素的事件绑定办法，方法中的this指向被绑定的的元素</li>
+<li>自执行函数中的this永远指向window，实参不属于自执行里面，属于自执行函数的外面。</li>
+<li>回调函数中的this指向window</li>
+<li>类中的this指向实例</li>
+<li>call/apple/ bind会改变this指向</li>
+<li>箭头函数中的this指向上一级作用域的this</li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-数据类型检测优缺点总结" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/07/31/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B%E4%BC%98%E7%BC%BA%E7%82%B9%E6%80%BB%E7%BB%93/" class="article-date">
+  	<time datetime="2020-07-31T14:18:44.149Z" itemprop="datePublished">2020-07-31</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/31/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B%E4%BC%98%E7%BC%BA%E7%82%B9%E6%80%BB%E7%BB%93/">
+        数据类型检测优缺点总结
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>###数据类型检测</p>
+<ul>
+<li><strong>typeof</strong>：返回一个字符串，<code>不能检测对象数组正则</code></li>
+<li><strong>instanceof</strong>：用来检测当前实例是否是某个类，局限性：<code>不能检测自变量出的实例，只要类在当前实例的原型链上都会返回true</code></li>
+<li><strong>constructor</strong>：可以检测基本数据类型和引用数据类型。局限性：<code>原型可能被扩展，到最后constructor丢失；继承可能导致原型constructor发生改变</code></li>
+<li><strong>object.prototype.tostring.call（）</strong>：<code>返回值当前函数种this对应的数据类型&quot;[object Object(数据类型)]&quot;；全局下可以直接写tostring.call（）</code><h3 id="检测属性是否私有"><a href="#检测属性是否私有" class="headerlink" title="检测属性是否私有"></a>检测属性是否私有</h3>hasOwnProperty:在object原型上，可以校验该属性是否是当前对象的私有属性，如果是就返回true，不是就返回flase</li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -199,18 +455,11 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>不仅一番寒彻骨，怎得梅花扑鼻香</p>
-<h2 id="我的随笔"><a href="#我的随笔" class="headerlink" title="我的随笔"></a>我的随笔</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<h2 id="我的随笔"><a href="#我的随笔" class="headerlink" title="我的随笔"></a>我的随笔</h2><h3 id="动态操作DOM的方法"><a href="#动态操作DOM的方法" class="headerlink" title="动态操作DOM的方法"></a>动态操作DOM的方法</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">1.document.createelement：</span><br><span class="line">创建一个元素</span><br><span class="line">2.appendchild：</span><br><span class="line">向容器的末尾新增一个元素</span><br><span class="line">元素.appendchild（子元素）</span><br><span class="line">3.insertbefore：</span><br><span class="line">在那个元素之前插入新元素</span><br><span class="line">4.removeChild</span><br><span class="line">删除子节点</span><br><span class="line">父元素.removeChild（删除的子元素）</span><br><span class="line">5.replaceChild</span><br><span class="line">替换元素</span><br><span class="line">父元素.replaceChild（a新元素，first老元素）</span><br><span class="line">6.cloneNode</span><br><span class="line">克隆节点，将节点克隆一份，默认flase，进行浅克隆，</span><br><span class="line">7.setAttribute：</span><br><span class="line">设置行间属性，</span><br><span class="line">元素.语法（“属性名”，“属性值”）</span><br><span class="line">removeAttribute：删除行间属性</span><br><span class="line">8.classlist</span><br><span class="line">新增，删除 ，替换 class名字</span><br><span class="line">元素.语法.remove（名字）</span><br><span class="line">元素.语法.add（名字）</span><br><span class="line">元素.语法.replace（“新元素”，’（被替换元素）‘）</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<h3 id="五大设计模式"><a href="#五大设计模式" class="headerlink" title="五大设计模式"></a>五大设计模式</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">单例模式</span><br><span class="line"></span><br><span class="line">把描述想同事物的属性放到了一个对象中，避免了全局变量的干扰</span><br><span class="line"></span><br><span class="line">高级单例模式</span><br><span class="line"></span><br><span class="line">用一个闭包也就是自执行函数把公共的变量和运用该变量的函数封装到一起，<span class="built_in">return</span>出一个数组并用一个变量接收；jqurry源码，react源码，vue源码。都是高级单例模式封装的。</span><br><span class="line"></span><br><span class="line">工厂模式</span><br><span class="line"></span><br><span class="line">把实现同一个功能的代码放到一个函数中，执行时只要执行这个函数就可以。减少了代码的冗余；实现高聚合‘低耦合，这也叫做函数的封装</span><br><span class="line"></span><br><span class="line">构造函数模式</span><br><span class="line"></span><br><span class="line">new：解决了私有属性问题，他会在代码执行解析前，创建一个空对象；并且让函数中的this指向这个对象，当代码执行完，会默认返回this指向的对象。</span><br><span class="line"></span><br><span class="line">原型模式</span><br><span class="line"></span><br><span class="line">解决了公共属性的问题：每个实例都是有该类new出来的，所以该类所属的原型上添加函数或者变量，即可解决公共属性问题</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 
       
     </div>
