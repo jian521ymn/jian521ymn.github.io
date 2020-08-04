@@ -169,6 +169,77 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-js中的盒模型" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/08/04/js%E4%B8%AD%E7%9A%84%E7%9B%92%E6%A8%A1%E5%9E%8B/" class="article-date">
+  	<time datetime="2020-08-04T02:15:06.274Z" itemprop="datePublished">2020-08-04</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/04/js%E4%B8%AD%E7%9A%84%E7%9B%92%E6%A8%A1%E5%9E%8B/">
+        js中的盒模型
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="js中的盒子模型13个"><a href="#js中的盒子模型13个" class="headerlink" title="js中的盒子模型13个"></a>js中的盒子模型13个</h3><p><strong><code>client系列</code></strong></p>
+<ul>
+<li><strong>clientwidth</strong>：width+左右两个padding值（可视化窗口的高度：）</li>
+<li><strong>clientheight</strong>：height+上下两个padding的值</li>
+<li><strong>clientleft/top</strong>: 左/上边框的宽度</li>
+</ul>
+<p><strong><code>scroll系列</code></strong></p>
+<ul>
+<li><strong>scrollwidth/height</strong>：在没有溢出的情况下，clientwidth和scrollwidth是一样的；再有溢出的情况下：=左/上padding+内容真实高度</li>
+<li><strong>scrolltop/scrollleft</strong>：当前滚动条横向/纵向卷曲的高度（<code>可修改属性</code>）</li>
+</ul>
+<p><strong><code>offset系列</code></strong></p>
+<ul>
+<li><strong>offestparent</strong>：父级参照物，当加上position属性（relative，absolute，fiixed）会让该元素所有子孙元素指向当前这个元素</li>
+<li><strong>offsetleft offsettop</strong>：左上偏移量，盒子的外边框到父级参照物内边框的距离；</li>
+<li><strong>offsetwidth/height</strong>: 盒子总宽/高度=盒子的左/上–右/下边框的外边框</li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-深度克隆详解以及实现" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -329,7 +400,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="this指向问题"><a href="#this指向问题" class="headerlink" title="this指向问题"></a>this指向问题</h3><ul>
+        <p>updated: 2018-01-01 12:00:00</p>
+<h3 id="this指向问题"><a href="#this指向问题" class="headerlink" title="this指向问题"></a>this指向问题</h3><ul>
 <li>在全局作用域下，this 和window指向同一个空间地址。</li>
 <li>看函数执行前有没有点“.‘如果没有就指向window。如果有，那么点前面是谁，他就指向谁</li>
 <li>给元素的事件绑定办法，方法中的this指向被绑定的的元素</li>
