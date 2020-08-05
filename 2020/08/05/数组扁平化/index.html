@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>combineReducers源码 | 社会小安哥</title>
+  <title>数组扁平化 | 社会小安哥</title>
 
   <!-- keywords -->
   
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="combineReducers源码分析,这个方法是为了实现多个reducer的合并,因为实际开发过程中我们不可能只有一个组件一个reducer方法 123456789101112&#x2F;&#x2F;这是合并reducer的方法,需要传入一个对象,这个对象成员就是每个reducer&#x2F;&#x2F;因为是合并所以最后要返回一个整合后的reducer方法let combineReducers">
+  <meta name="description" content="数组扁平化 Array.prototype.flat（）： es6是参数，扁平的维数&#x3D;&gt;参数，Infinity为无限级 ary.tostring().split(“,”).map(item&#x3D;&gt;parsefloat(item)):先转字符串，在把字符串通过split方法，转化为数组,再把每一项通过map映射成数字 JSON.stringify(arr).replace(&#x2F;([|])&#x2F;g,">
 <meta property="og:type" content="article">
-<meta property="og:title" content="combineReducers源码">
-<meta property="og:url" content="http://yoursite.com/2020/08/05/combineReducers%E6%BA%90%E7%A0%81/index.html">
+<meta property="og:title" content="数组扁平化">
+<meta property="og:url" content="http://yoursite.com/2020/08/05/%E6%95%B0%E7%BB%84%E6%89%81%E5%B9%B3%E5%8C%96/index.html">
 <meta property="og:site_name" content="社会小安哥">
-<meta property="og:description" content="combineReducers源码分析,这个方法是为了实现多个reducer的合并,因为实际开发过程中我们不可能只有一个组件一个reducer方法 123456789101112&#x2F;&#x2F;这是合并reducer的方法,需要传入一个对象,这个对象成员就是每个reducer&#x2F;&#x2F;因为是合并所以最后要返回一个整合后的reducer方法let combineReducers">
+<meta property="og:description" content="数组扁平化 Array.prototype.flat（）： es6是参数，扁平的维数&#x3D;&gt;参数，Infinity为无限级 ary.tostring().split(“,”).map(item&#x3D;&gt;parsefloat(item)):先转字符串，在把字符串通过split方法，转化为数组,再把每一项通过map映射成数字 JSON.stringify(arr).replace(&#x2F;([|])&#x2F;g,">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-08-05T12:06:43.510Z">
-<meta property="article:modified_time" content="2019-08-05T12:25:59.737Z">
+<meta property="article:published_time" content="2020-08-05T13:52:16.094Z">
+<meta property="article:modified_time" content="2020-08-05T13:52:16.239Z">
 <meta property="article:author" content="纪安">
 <meta name="twitter:card" content="summary">
   
@@ -171,11 +171,11 @@
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-combineReducers源码" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-数组扁平化" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2020/08/05/combineReducers%E6%BA%90%E7%A0%81/" class="article-date">
-  	<time datetime="2020-08-05T12:06:43.510Z" itemprop="datePublished">2020-08-05</time>
+      <a href="/2020/08/05/%E6%95%B0%E7%BB%84%E6%89%81%E5%B9%B3%E5%8C%96/" class="article-date">
+  	<time datetime="2020-08-05T13:52:16.094Z" itemprop="datePublished">2020-08-05</time>
 </a>
     </div>
   
@@ -188,7 +188,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      combineReducers源码
+      数组扁平化
       
     </h1>
   
@@ -206,8 +206,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="combineReducers源码"><a href="#combineReducers源码" class="headerlink" title="combineReducers源码"></a>combineReducers源码</h3><p>分析,这个方法是为了实现多个reducer的合并,因为实际开发过程中我们不可能只有一个组件一个reducer方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;这是合并reducer的方法,需要传入一个对象,这个对象成员就是每个reducer</span><br><span class="line">&#x2F;&#x2F;因为是合并所以最后要返回一个整合后的reducer方法</span><br><span class="line">let combineReducers&#x3D;(reducers)&#x3D;&gt;&#123;</span><br><span class="line">  return (state&#x3D;&#123;&#125;,action)&#x3D;&gt;&#123;&#x2F;&#x2F;state第一次执行的时候是undefined,所以给它默认值一个空对象</span><br><span class="line">    let obj&#x3D;&#123;&#125;;</span><br><span class="line">    for(let key in reducers)&#123;</span><br><span class="line">      obj[key]&#x3D;reducers[key](state[key],action);</span><br><span class="line">      &#x2F;&#x2F;obj新增键值对,为reducers[key]当前键值对执行的返回值,当第一次执行时,state[key]为undefined,就用到了reducer中的state默认值,后期再执行就不是undefined了</span><br><span class="line">    &#125;</span><br><span class="line">    return obj; &#x2F;&#x2F;这个对象就包含了所有的值</span><br><span class="line">  &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h3 id="数组扁平化"><a href="#数组扁平化" class="headerlink" title="数组扁平化"></a>数组扁平化</h3><ul>
+<li><strong>Array.prototype.flat（）</strong>： es6是参数，扁平的维数=&gt;参数，<strong>Infinity</strong>为无限级</li>
+<li><strong>ary.tostring().split(“,”).map(item=&gt;parsefloat(item))</strong>:先转<code>字符串</code>，在把字符串通过<code>split</code>方法，转化为数组,再把每一项通过<code>map</code>映射成数字</li>
+<li><strong>JSON.stringify(arr).replace(/([|])/g,””).map(item=&gt;parsefloat(item))</strong>:转为json字符串，再用正则去匹配替换，在map映射</li>
+<li><strong>some和扩展运算符</strong><code>while (arr.some(item=&gt;Array.isArray(item))) {
+  arr=[].concat(...arr)
+}</code></li>
+<li><strong>递归封装</strong>：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Array.prototype.myflat &#x3D; function () &#123;</span><br><span class="line">            console.log(this);</span><br><span class="line">            let result &#x3D; [],&#x2F;&#x2F;</span><br><span class="line">                _this &#x3D; this</span><br><span class="line">            let fn &#x3D; (arr) &#x3D;&gt; &#123;</span><br><span class="line">                for (let i &#x3D; 0; i &lt; arr.length; i++) &#123;</span><br><span class="line">                    let ary &#x3D; arr[i]</span><br><span class="line">                    if (Array.isArray(ary)) &#123;</span><br><span class="line">                        fn(ary);</span><br><span class="line">                        continue;</span><br><span class="line">                    &#125;</span><br><span class="line">                    result.push(ary)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            fn(_this);</span><br><span class="line">            return result</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -216,18 +224,9 @@
     
 <nav id="article-nav">
   
-    <a href="/2020/08/05/%E5%B8%B8%E7%94%A8%E4%BA%8B%E4%BB%B6%E5%90%88%E9%9B%86/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">&lt;</strong>
-      <div class="article-nav-title">
-        
-          常用事件合集
-        
-      </div>
-    </a>
   
-  
-    <a href="/2020/08/04/React-Redux%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">React-Redux核心源码</div>
+    <a href="/2020/08/05/%E5%B8%B8%E7%94%A8%E4%BA%8B%E4%BB%B6%E5%90%88%E9%9B%86/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">常用事件合集</div>
       <strong class="article-nav-caption">&gt;</strong>
     </a>
   
@@ -237,7 +236,7 @@
 </article>
 
 
-<div class="ds-share share" data-thread-key="combineReducers源码" data-title="combineReducers源码" data-url="http://yoursite.com/2020/08/05/combineReducers%E6%BA%90%E7%A0%81/"  data-images="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2336376645,1481998160&amp;fm=26&amp;gp=0.jpg" data-content="combineReducers源码">
+<div class="ds-share share" data-thread-key="数组扁平化" data-title="数组扁平化" data-url="http://yoursite.com/2020/08/05/%E6%95%B0%E7%BB%84%E6%89%81%E5%B9%B3%E5%8C%96/"  data-images="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2336376645,1481998160&amp;fm=26&amp;gp=0.jpg" data-content="数组扁平化">
     <div class="ds-share-inline">
       <ul  class="ds-share-icons-16">
       	<li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
