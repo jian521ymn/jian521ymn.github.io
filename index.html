@@ -169,6 +169,61 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-combineReducers源码" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/08/05/combineReducers%E6%BA%90%E7%A0%81/" class="article-date">
+  	<time datetime="2020-08-05T12:06:43.510Z" itemprop="datePublished">2020-08-05</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/05/combineReducers%E6%BA%90%E7%A0%81/">
+        combineReducers源码
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="combineReducers源码"><a href="#combineReducers源码" class="headerlink" title="combineReducers源码"></a>combineReducers源码</h3><p>分析,这个方法是为了实现多个reducer的合并,因为实际开发过程中我们不可能只有一个组件一个reducer方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;这是合并reducer的方法,需要传入一个对象,这个对象成员就是每个reducer</span><br><span class="line">&#x2F;&#x2F;因为是合并所以最后要返回一个整合后的reducer方法</span><br><span class="line">let combineReducers&#x3D;(reducers)&#x3D;&gt;&#123;</span><br><span class="line">  return (state&#x3D;&#123;&#125;,action)&#x3D;&gt;&#123;&#x2F;&#x2F;state第一次执行的时候是undefined,所以给它默认值一个空对象</span><br><span class="line">    let obj&#x3D;&#123;&#125;;</span><br><span class="line">    for(let key in reducers)&#123;</span><br><span class="line">      obj[key]&#x3D;reducers[key](state[key],action);</span><br><span class="line">      &#x2F;&#x2F;obj新增键值对,为reducers[key]当前键值对执行的返回值,当第一次执行时,state[key]为undefined,就用到了reducer中的state默认值,后期再执行就不是undefined了</span><br><span class="line">    &#125;</span><br><span class="line">    return obj; &#x2F;&#x2F;这个对象就包含了所有的值</span><br><span class="line">  &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-React-Redux核心源码" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
