@@ -169,6 +169,197 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-深度克隆详解以及实现" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/07/31/%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86%E8%AF%A6%E8%A7%A3%E4%BB%A5%E5%8F%8A%E5%AE%9E%E7%8E%B0/" class="article-date">
+  	<time datetime="2020-07-31T14:32:01.566Z" itemprop="datePublished">2020-07-31</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/31/%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86%E8%AF%A6%E8%A7%A3%E4%BB%A5%E5%8F%8A%E5%AE%9E%E7%8E%B0/">
+        深度克隆详解以及实现
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="浅拷贝的4种方法"><a href="#浅拷贝的4种方法" class="headerlink" title="浅拷贝的4种方法"></a>浅拷贝的4种方法</h3><ul>
+<li><strong>直接赋值</strong>：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span>  obj=&#123;<span class="attr">username</span>:<span class="string">"kebi"</span>,<span class="attr">age</span>:<span class="number">18</span>&#125;;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">let</span>   obj1=obj;</span><br><span class="line"></span><br><span class="line">     修改obj1的数据会影响obj的数据，所以是浅拷贝</span><br></pre></td></tr></table></figure></li>
+<li><strong>Object.assign()</strong>：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span>   obj2=<span class="built_in">Object</span>.assign(obj);</span><br><span class="line"></span><br><span class="line">    将源对象的属性赋值到目标对象上，此时obj2就有obj中的属性，修改obj2会影响原来的数据</span><br></pre></td></tr></table></figure></li>
+<li><strong>Array.prototype.concat()</strong>：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span>  arr=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,&#123;<span class="attr">username</span>:<span class="string">"kebi"</span>,<span class="attr">age</span>:<span class="number">18</span>&#125;];</span><br><span class="line"></span><br><span class="line">   <span class="keyword">let</span>  arr1=arr.concat()  <span class="comment">// concat是连接数组，如果不传参，则表示复制原数组的数据到目标数组中</span></span><br><span class="line"></span><br><span class="line">  注意：使用此方法时，数组中的基本数据类型的数据照样是生成一份新数据拷贝到新数组中，所以修改新数组的基本数据类型的数据不会影响原数组，如果修改数组中的对象，同样拷贝的是一份对象的引用到新数组中，所以修改新数组的对象会直接影响原来数组的对象数据。这跟直接赋值有一定的区别</span><br></pre></td></tr></table></figure></li>
+<li><strong>Array.prototype.slice()</strong>：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span>  arr2=arr.slice();  <span class="comment">//slice是截取数组或者字符串，不传参表示默认全部</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>Array.prototype.slice()</strong>：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span>  obj=&#123;<span class="attr">username</span>:<span class="string">"kebi"</span>,<span class="attr">age</span>:<span class="number">18</span>&#125;;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">let</span>   obj1=obj;</span><br><span class="line"></span><br><span class="line">     修改obj1的数据会影响obj的数据，所以是浅拷贝</span><br></pre></td></tr></table></figure>
+<h3 id="深克隆的2种方法"><a href="#深克隆的2种方法" class="headerlink" title="深克隆的2种方法"></a>深克隆的2种方法</h3></li>
+<li><strong>Json.parse(Json.Stringfy())</strong>：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr3=<span class="built_in">JSON</span>.parse(<span class="built_in">JSON</span>.stringify(arr));</span><br><span class="line"></span><br><span class="line">   <span class="comment">//先把原数组转换为json字符串，变为基本数据类型，完全生成一份新数据，然后把新数据转换为js原数组，就利用了这一点，实现了深拷贝</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>下面是实现深度克隆的方法：递归</strong>：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 实现深度克隆----对象/数组</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">checkedType</span>(<span class="params">target</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">Object</span>.prototype.toString.call(target).slice(<span class="number">8</span>,<span class="number">-1</span>); <span class="comment">//返回检测的数据类型</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">clone</span>(<span class="params">target</span>) </span>&#123;</span><br><span class="line">      <span class="comment">//判断拷贝的数据类型</span></span><br><span class="line">      <span class="comment">//初始化变量result 成为最终克隆的数据</span></span><br><span class="line">      <span class="keyword">let</span> result,targetType=checkedType(target);</span><br><span class="line">      <span class="keyword">if</span>(targetType === <span class="string">'Object'</span>)&#123;</span><br><span class="line">          result = &#123;&#125;</span><br><span class="line">      &#125;<span class="keyword">else</span> <span class="keyword">if</span>(targetType === <span class="string">'Array'</span>)&#123;</span><br><span class="line">          result = []</span><br><span class="line">      &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">          <span class="keyword">return</span> target;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">//遍历目标数据</span></span><br><span class="line">      <span class="keyword">for</span>(<span class="keyword">let</span> key <span class="keyword">in</span> target)&#123;</span><br><span class="line">          <span class="comment">//获取遍历数据结构的每一项值</span></span><br><span class="line">          <span class="keyword">let</span> value = target[key];</span><br><span class="line">          <span class="comment">//判断目标结构里的每一项值是否存在对象/数组</span></span><br><span class="line">          <span class="keyword">if</span>(checkedType(value) === <span class="string">'Object'</span> || checkedType(value) === <span class="string">'Array'</span>)&#123;</span><br><span class="line">              <span class="comment">//继续遍历获取到的value值</span></span><br><span class="line">             result[key]=clone(value);</span><br><span class="line">          &#125;<span class="keyword">else</span>&#123; <span class="comment">//获取到的value值是基本的数据类型或者是函数</span></span><br><span class="line">              result[key]=value;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> arr=[<span class="number">1</span>,<span class="number">2</span>,&#123;<span class="attr">username</span>:<span class="string">'kebi'</span>,<span class="attr">age</span>:<span class="number">18</span>&#125;];</span><br><span class="line">  <span class="keyword">let</span> arr1=clone(arr);</span><br><span class="line">  <span class="built_in">console</span>.log(arr1);   </span><br><span class="line">  arr1[<span class="number">2</span>].username=<span class="string">'gmx'</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(arr,arr1);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-数据类型检测优缺点总结" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/07/31/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B%E4%BC%98%E7%BC%BA%E7%82%B9%E6%80%BB%E7%BB%93/" class="article-date">
+  	<time datetime="2020-07-31T14:18:44.149Z" itemprop="datePublished">2020-07-31</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/07/31/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B%E4%BC%98%E7%BC%BA%E7%82%B9%E6%80%BB%E7%BB%93/">
+        数据类型检测优缺点总结
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>###数据类型检测</p>
+<ul>
+<li><strong>typeof</strong>：返回一个字符串，不能检测对象数组正则</li>
+<li><strong>instanceof</strong>：用来检测当前实例是否是某个类，局限性：不能检测自变量出的实例，只要类在当前实例的原型链上都会返回true</li>
+<li><strong>constructor</strong>：可以检测基本数据类型和引用数据类型。局限性：原型可能被扩展，到最后constructor丢失；继承可能导致原型constructor发生改变</li>
+<li><strong>object.prototype.tostring.call（）</strong>：返回值当前函数种this对应的数据类型”[object Object(数据类型)]”；全局下可以直接写tostring.call（）<h3 id="检测属性是否私有"><a href="#检测属性是否私有" class="headerlink" title="检测属性是否私有"></a>检测属性是否私有</h3>hasOwnProperty:在object原型上，可以校验该属性是否是当前对象的私有属性，如果是就返回true，不是就返回flase</li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-this指向" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/08/05/this%E6%8C%87%E5%90%91/" class="article-date">
+  	<time datetime="2019-08-05T12:17:20.928Z" itemprop="datePublished">2019-08-05</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/05/this%E6%8C%87%E5%90%91/">
+        this指向
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>updated: 2018-01-01 12:00:00</p>
+<h3 id="this指向问题"><a href="#this指向问题" class="headerlink" title="this指向问题"></a>this指向问题</h3><ul>
+<li>在全局作用域下，this 和window指向同一个空间地址。</li>
+<li>看函数执行前有没有点“.‘如果没有就指向window。如果有，那么点前面是谁，他就指向谁</li>
+<li>给元素的事件绑定办法，方法中的this指向被绑定的的元素</li>
+<li>自执行函数中的this永远指向window，实参不属于自执行里面，属于自执行函数的外面。</li>
+<li>回调函数中的this指向window</li>
+<li>类中的this指向实例</li>
+<li>call/apple/ bind会改变this指向</li>
+<li>箭头函数中的this指向上一级作用域的this</li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-面向对象原型链与与继承 " class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">

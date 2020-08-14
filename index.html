@@ -169,6 +169,200 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-面试--React中PureComponent原理与核心源码" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/08/14/%E9%9D%A2%E8%AF%95--React%E4%B8%ADPureComponent%E5%8E%9F%E7%90%86%E4%B8%8E%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81/" class="article-date">
+  	<time datetime="2020-08-14T15:31:18.081Z" itemprop="datePublished">2020-08-14</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/14/%E9%9D%A2%E8%AF%95--React%E4%B8%ADPureComponent%E5%8E%9F%E7%90%86%E4%B8%8E%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81/">
+        面试--React中PureComponent原理与核心源码
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="React中PureComponent原理与核心源码"><a href="#React中PureComponent原理与核心源码" class="headerlink" title="React中PureComponent原理与核心源码"></a>React中PureComponent原理与核心源码</h3><ul>
+<li><strong>PureComponent 会对 <code>props</code> 和 <code>state</code> 进行浅层比较，并减少了跳过必要更新的可能性。</strong></li>
+<li><strong>React.PureComponent 与 React.Component 很相似。两者的区别在于 React.Component 并未实现 <code>shouldComponentUpdate()</code>，而 React.PureComponent中以浅层对比 prop 和 state 的方式来实现了该函数。</strong></li>
+<li>** nextState.items === prevState.items 为 true进行浅层判断，会导致重新render**</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">shallowEqual</span>(<span class="params">obj1, obj2</span>) </span>&#123;<span class="comment">//传入新老state和prop</span></span><br><span class="line">  <span class="keyword">if</span> (obj1 === obj2) &#123;<span class="comment">//一样直接不改变</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> obj1 !== <span class="string">'object'</span> || obj1 === <span class="literal">null</span> || <span class="keyword">typeof</span> obj2 !== <span class="string">'object'</span> || obj2 === <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span><span class="comment">//检测，如果有一个满足就更新</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> keys1 = <span class="built_in">Object</span>.keys(obj1)<span class="comment">//拿到所有属性名组成的数组</span></span><br><span class="line">  <span class="keyword">let</span> keys2 = <span class="built_in">Object</span>.keys(obj2)<span class="comment">//拿到所有属性名组成的数组</span></span><br><span class="line">  <span class="keyword">if</span> (keys1.length !== keys2.length) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span><span class="comment">//如果键值对数量不相等，那么更新</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">of</span> keys1) &#123;<span class="comment">//循环进行比较</span></span><br><span class="line">    <span class="keyword">if</span> (!obj2.hasOwnProperty(key) || obj1[key] !== obj2[key]) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span><span class="comment">//如果obj2没有key的值，或者表层的key的值不相等时，更新</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span><span class="comment">//走到这里，说明没改变，那么不更新</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PureComponent</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;<span class="comment">//引用shouldcomponentupdate方法</span></span><br><span class="line">  shouldComponentUpdate(nextProps, nextState) &#123;<span class="comment">//传入的nextprops，nextState与这次的比较，并且传入</span></span><br><span class="line">    <span class="keyword">return</span> !shallowEqual(<span class="keyword">this</span>.props, nextProps) || !shallowEqual(<span class="keyword">this</span>.state, nextState)</span><br><span class="line">    <span class="comment">//返回值是ture就更新组件，false就不更新组件，这里调用手写shallowEqual方法</span></span><br><span class="line">  &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.props.children;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> PureComponent;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-面试—provide与inject用法" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/08/14/%E9%9D%A2%E8%AF%95%E2%80%94provide%E4%B8%8Einject%E7%94%A8%E6%B3%95/" class="article-date">
+  	<time datetime="2020-08-14T14:01:03.438Z" itemprop="datePublished">2020-08-14</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/14/%E9%9D%A2%E8%AF%95%E2%80%94provide%E4%B8%8Einject%E7%94%A8%E6%B3%95/">
+        面试—provide与inject用法
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##面试—provide与inject用法</p>
+<h3 id="爷孙组件传递"><a href="#爷孙组件传递" class="headerlink" title="爷孙组件传递"></a>爷孙组件传递</h3><p><strong>以允许一个祖先组件向其所有子孙后代注入一个依赖，不论组件层次有多深，并在起上下游关系成立的时间里始终生效。</strong></p>
+<ul>
+<li>使用场景：由于vue有$parent属性可以让子组件访问父组件。但孙组件想要访问祖先组件就比较困难。通过provide/inject可以轻松实现跨级访问祖先组件的数据</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//祖宗注入。provide</span></span><br><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;div id=<span class="string">"app"</span>&gt;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">            data () &#123;</span><br><span class="line">                    <span class="keyword">return</span> &#123;</span><br><span class="line">                        datas: [</span><br><span class="line">                            &#123;</span><br><span class="line">                                id: <span class="number">1</span>,</span><br><span class="line">                                label: <span class="string">'产品一'</span></span><br><span class="line">                            &#125;,</span><br><span class="line">                            &#123;</span><br><span class="line">                                、,</span><br><span class="line">            provide &#123;</span><br><span class="line">                <span class="keyword">return</span> &#123;</span><br><span class="line">                    datas: <span class="keyword">this</span>.datas</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//后代通过inject都可以拿到</span></span><br><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">        &lt;ul&gt;</span><br><span class="line">        &lt;li v-<span class="keyword">for</span>=<span class="string">"(item, index) in datas"</span> :key=<span class="string">"index"</span>&gt;</span><br><span class="line">            &#123;&#123; item.label &#125;&#125;</span><br><span class="line">        &lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/u</span>l&gt;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">            inject: [<span class="string">'datas'</span>]</span><br><span class="line">        &#125;</span><br><span class="line">    &lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-session与token" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/08/12/session%E4%B8%8Etoken/" class="article-date">
+  	<time datetime="2020-08-12T01:13:02.572Z" itemprop="datePublished">2020-08-12</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/12/session%E4%B8%8Etoken/">
+        session与token
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="session与token"><a href="#session与token" class="headerlink" title="session与token"></a>session与token</h3><p><strong>session 是什么？</strong></p>
+<blockquote>
+<p>session：服务端技术，意为会话控制；<br>和 cookie 不同，session 是保存在服务器上的，而且并不会随着 http 传递；因为 cookie 保存在客户端，<br>还是很不安全的，服务器为了杜绝这种事情，在服务器上也搞了一个存储用户信息的东西，这就是 session。<br>一般用于用户的登录状态，用户 id 等敏感信息的保存；</p>
+</blockquote>
+<p><strong>session 怎么使用?</strong></p>
+<blockquote>
+<p>以登录为例，当我们登录后，服务端会在 cookie 中设置当前用户的登录状态为已经登录，<br>同时在服务器上生成一份 session 文件，session 中存储用户 id，登录状态的有效期限等；这个 session 文件有<br>一个 id，生成 session 文件后，服务器还会把 session-id 写进 cookie。然后返回给客户端，此时用户的客户端<br>收到的 cookie 中包含登录状态和 session-id；等下一次再去请求时，http 协议会自动带着所有的 cookie<br>去请求；等服务器收到请求后，从 cookie 中把用户信息拿出来，然后再根据 session-id 把 session 读取出来，<br>再从 session 中查询登录状态，如果登录状态有效，就继续正常的响应，否则就返回登录失效的状态，要求用户登录；</p>
+</blockquote>
+<p><strong>token 原理？</strong></p>
+<blockquote>
+<p>一般在用户登录时，客户端把用户的用户名和密码传递给服务器，服务端进行校验，如果没有问题，就会生成一个<br> token；token 是一个字符串，这个字符串一般是加密过的，一般包含了用户 id，登录的时间戳，以及 sign<br>(签名，生成 token 的前几位进行加密的结果，可以防止 token 被篡改，一旦篡改了后面这一段和前面的对不上了)<br>；生成 token 后，服务器把 token 返回给前端，然后前端下次请求的时候需要带上这个 token，然后服务端在接收<br>到请求后会首先校验这个 token 是否有效，如果有效继续受理请求，如果无效则直接拒绝；</p>
+</blockquote>
+<p><strong>使用 token 的方式有哪些？</strong></p>
+<blockquote>
+<p>1.服务端也可以直接把 token 写进 cookie 中，下次客户端发起请求时会自动带上；<br>2.服务端也可以作为数据返给前端，但是前端此时需要手动的保存这个 token，可以保存在 localStorage 中，下次发请求时从 ls 中取出作为参数传给服务器即可<br>3.服务端返回 token 后，客户端可以把这个 token 写进请求头中，然后服务端每次从请求头中获取；</p>
+</blockquote>
+<p><strong>session 和 cookie 的区别？</strong></p>
+<blockquote>
+<p>session 存在服务器上，是服务器的技术；<br>cookie 存在客户端，是 http 协议的一部分；</p>
+</blockquote>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-vue生命周期六连问" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -644,197 +838,6 @@
 <li><strong>offestparent</strong>：父级参照物，当加上position属性（relative，absolute，fiixed）会让该元素所有子孙元素指向当前这个元素</li>
 <li><strong>offsetleft offsettop</strong>：左上偏移量，盒子的外边框到父级参照物内边框的距离；</li>
 <li><strong>offsetwidth/height</strong>: 盒子总宽/高度=盒子的左/上–右/下边框的外边框</li>
-</ul>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-      
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-深度克隆详解以及实现" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2020/07/31/%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86%E8%AF%A6%E8%A7%A3%E4%BB%A5%E5%8F%8A%E5%AE%9E%E7%8E%B0/" class="article-date">
-  	<time datetime="2020-07-31T14:32:01.566Z" itemprop="datePublished">2020-07-31</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/07/31/%E6%B7%B1%E5%BA%A6%E5%85%8B%E9%9A%86%E8%AF%A6%E8%A7%A3%E4%BB%A5%E5%8F%8A%E5%AE%9E%E7%8E%B0/">
-        深度克隆详解以及实现
-        
-      </a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="浅拷贝的4种方法"><a href="#浅拷贝的4种方法" class="headerlink" title="浅拷贝的4种方法"></a>浅拷贝的4种方法</h3><ul>
-<li><strong>直接赋值</strong>：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span>  obj=&#123;<span class="attr">username</span>:<span class="string">"kebi"</span>,<span class="attr">age</span>:<span class="number">18</span>&#125;;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">let</span>   obj1=obj;</span><br><span class="line"></span><br><span class="line">     修改obj1的数据会影响obj的数据，所以是浅拷贝</span><br></pre></td></tr></table></figure></li>
-<li><strong>Object.assign()</strong>：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span>   obj2=<span class="built_in">Object</span>.assign(obj);</span><br><span class="line"></span><br><span class="line">    将源对象的属性赋值到目标对象上，此时obj2就有obj中的属性，修改obj2会影响原来的数据</span><br></pre></td></tr></table></figure></li>
-<li><strong>Array.prototype.concat()</strong>：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span>  arr=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,&#123;<span class="attr">username</span>:<span class="string">"kebi"</span>,<span class="attr">age</span>:<span class="number">18</span>&#125;];</span><br><span class="line"></span><br><span class="line">   <span class="keyword">let</span>  arr1=arr.concat()  <span class="comment">// concat是连接数组，如果不传参，则表示复制原数组的数据到目标数组中</span></span><br><span class="line"></span><br><span class="line">  注意：使用此方法时，数组中的基本数据类型的数据照样是生成一份新数据拷贝到新数组中，所以修改新数组的基本数据类型的数据不会影响原数组，如果修改数组中的对象，同样拷贝的是一份对象的引用到新数组中，所以修改新数组的对象会直接影响原来数组的对象数据。这跟直接赋值有一定的区别</span><br></pre></td></tr></table></figure></li>
-<li><strong>Array.prototype.slice()</strong>：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span>  arr2=arr.slice();  <span class="comment">//slice是截取数组或者字符串，不传参表示默认全部</span></span><br></pre></td></tr></table></figure></li>
-<li><strong>Array.prototype.slice()</strong>：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span>  obj=&#123;<span class="attr">username</span>:<span class="string">"kebi"</span>,<span class="attr">age</span>:<span class="number">18</span>&#125;;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">let</span>   obj1=obj;</span><br><span class="line"></span><br><span class="line">     修改obj1的数据会影响obj的数据，所以是浅拷贝</span><br></pre></td></tr></table></figure>
-<h3 id="深克隆的2种方法"><a href="#深克隆的2种方法" class="headerlink" title="深克隆的2种方法"></a>深克隆的2种方法</h3></li>
-<li><strong>Json.parse(Json.Stringfy())</strong>：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr3=<span class="built_in">JSON</span>.parse(<span class="built_in">JSON</span>.stringify(arr));</span><br><span class="line"></span><br><span class="line">   <span class="comment">//先把原数组转换为json字符串，变为基本数据类型，完全生成一份新数据，然后把新数据转换为js原数组，就利用了这一点，实现了深拷贝</span></span><br></pre></td></tr></table></figure></li>
-<li><strong>下面是实现深度克隆的方法：递归</strong>：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 实现深度克隆----对象/数组</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">checkedType</span>(<span class="params">target</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">Object</span>.prototype.toString.call(target).slice(<span class="number">8</span>,<span class="number">-1</span>); <span class="comment">//返回检测的数据类型</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">clone</span>(<span class="params">target</span>) </span>&#123;</span><br><span class="line">      <span class="comment">//判断拷贝的数据类型</span></span><br><span class="line">      <span class="comment">//初始化变量result 成为最终克隆的数据</span></span><br><span class="line">      <span class="keyword">let</span> result,targetType=checkedType(target);</span><br><span class="line">      <span class="keyword">if</span>(targetType === <span class="string">'Object'</span>)&#123;</span><br><span class="line">          result = &#123;&#125;</span><br><span class="line">      &#125;<span class="keyword">else</span> <span class="keyword">if</span>(targetType === <span class="string">'Array'</span>)&#123;</span><br><span class="line">          result = []</span><br><span class="line">      &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">          <span class="keyword">return</span> target;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">//遍历目标数据</span></span><br><span class="line">      <span class="keyword">for</span>(<span class="keyword">let</span> key <span class="keyword">in</span> target)&#123;</span><br><span class="line">          <span class="comment">//获取遍历数据结构的每一项值</span></span><br><span class="line">          <span class="keyword">let</span> value = target[key];</span><br><span class="line">          <span class="comment">//判断目标结构里的每一项值是否存在对象/数组</span></span><br><span class="line">          <span class="keyword">if</span>(checkedType(value) === <span class="string">'Object'</span> || checkedType(value) === <span class="string">'Array'</span>)&#123;</span><br><span class="line">              <span class="comment">//继续遍历获取到的value值</span></span><br><span class="line">             result[key]=clone(value);</span><br><span class="line">          &#125;<span class="keyword">else</span>&#123; <span class="comment">//获取到的value值是基本的数据类型或者是函数</span></span><br><span class="line">              result[key]=value;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> arr=[<span class="number">1</span>,<span class="number">2</span>,&#123;<span class="attr">username</span>:<span class="string">'kebi'</span>,<span class="attr">age</span>:<span class="number">18</span>&#125;];</span><br><span class="line">  <span class="keyword">let</span> arr1=clone(arr);</span><br><span class="line">  <span class="built_in">console</span>.log(arr1);   </span><br><span class="line">  arr1[<span class="number">2</span>].username=<span class="string">'gmx'</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(arr,arr1);</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-      
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-数据类型检测优缺点总结" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2020/07/31/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B%E4%BC%98%E7%BC%BA%E7%82%B9%E6%80%BB%E7%BB%93/" class="article-date">
-  	<time datetime="2020-07-31T14:18:44.149Z" itemprop="datePublished">2020-07-31</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/07/31/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B%E4%BC%98%E7%BC%BA%E7%82%B9%E6%80%BB%E7%BB%93/">
-        数据类型检测优缺点总结
-        
-      </a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>###数据类型检测</p>
-<ul>
-<li><strong>typeof</strong>：返回一个字符串，不能检测对象数组正则</li>
-<li><strong>instanceof</strong>：用来检测当前实例是否是某个类，局限性：不能检测自变量出的实例，只要类在当前实例的原型链上都会返回true</li>
-<li><strong>constructor</strong>：可以检测基本数据类型和引用数据类型。局限性：原型可能被扩展，到最后constructor丢失；继承可能导致原型constructor发生改变</li>
-<li><strong>object.prototype.tostring.call（）</strong>：返回值当前函数种this对应的数据类型”[object Object(数据类型)]”；全局下可以直接写tostring.call（）<h3 id="检测属性是否私有"><a href="#检测属性是否私有" class="headerlink" title="检测属性是否私有"></a>检测属性是否私有</h3>hasOwnProperty:在object原型上，可以校验该属性是否是当前对象的私有属性，如果是就返回true，不是就返回flase</li>
-</ul>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-      
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-this指向" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2019/08/05/this%E6%8C%87%E5%90%91/" class="article-date">
-  	<time datetime="2019-08-05T12:17:20.928Z" itemprop="datePublished">2019-08-05</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/05/this%E6%8C%87%E5%90%91/">
-        this指向
-        
-      </a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>updated: 2018-01-01 12:00:00</p>
-<h3 id="this指向问题"><a href="#this指向问题" class="headerlink" title="this指向问题"></a>this指向问题</h3><ul>
-<li>在全局作用域下，this 和window指向同一个空间地址。</li>
-<li>看函数执行前有没有点“.‘如果没有就指向window。如果有，那么点前面是谁，他就指向谁</li>
-<li>给元素的事件绑定办法，方法中的this指向被绑定的的元素</li>
-<li>自执行函数中的this永远指向window，实参不属于自执行里面，属于自执行函数的外面。</li>
-<li>回调函数中的this指向window</li>
-<li>类中的this指向实例</li>
-<li>call/apple/ bind会改变this指向</li>
-<li>箭头函数中的this指向上一级作用域的this</li>
 </ul>
 
       
