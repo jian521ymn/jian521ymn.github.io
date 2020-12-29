@@ -169,6 +169,129 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-promise的all，race，finally源码解析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/08/18/promise%E7%9A%84all%EF%BC%8Crace%EF%BC%8Cfinally%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="article-date">
+  	<time datetime="2020-08-17T16:50:55.413Z" itemprop="datePublished">2020-08-18</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/18/promise%E7%9A%84all%EF%BC%8Crace%EF%BC%8Cfinally%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+        promise的all，race，finally源码解析
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="promise的all，race，finally源码解析"><a href="#promise的all，race，finally源码解析" class="headerlink" title="promise的all，race，finally源码解析"></a>promise的all，race，finally源码解析</h2><h3 id="promise-all源码"><a href="#promise-all源码" class="headerlink" title="promise.all源码"></a>promise.all源码</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//传入为空返回成成功态，所有加载完才会，改成功态，一个失败态就会直接结束</span></span><br><span class="line">        <span class="built_in">Promise</span>.all_ = <span class="function"><span class="keyword">function</span> (<span class="params">promise_</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">                <span class="comment">//array.from，会转为真正的数组，将传入的promise实例组成一个真正的狐族</span></span><br><span class="line">                promise_ = <span class="built_in">Array</span>.from(promise_)</span><br><span class="line">                <span class="keyword">if</span> (promise_.length === <span class="number">0</span>) &#123;<span class="comment">//如果传入的的是一个空数组，会异步的返回一个成功态的promise</span></span><br><span class="line">                    resolve([])</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">let</span> result = [];<span class="comment">//准备一个空数组</span></span><br><span class="line">                    <span class="keyword">let</span> index = <span class="number">0</span>; <span class="comment">//定义一个index</span></span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; promise_.length; i++) &#123;<span class="comment">//循环这几个promise</span></span><br><span class="line">                    <span class="built_in">Promise</span>.resolve(promise_[i]).then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">                        result[i] = data<span class="comment">//给数组增加一项</span></span><br><span class="line">                        <span class="keyword">if</span>(++index===promise_.length)&#123;</span><br><span class="line">                            <span class="comment">//如果所有promise都是fulfilled，promise。all实例才变fulfilled</span></span><br><span class="line">                            resolve(result)<span class="comment">//所有promise都获取完数据，length相等，才会执行他</span></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;,err=&gt;&#123;</span><br><span class="line">                        reject(err);</span><br><span class="line">                        <span class="keyword">return</span></span><br><span class="line">                    &#125;)</span><br><span class="line"></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="promise-race源码"><a href="#promise-race源码" class="headerlink" title="promise.race源码"></a>promise.race源码</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.ra_ce = <span class="function"><span class="keyword">function</span>(<span class="params">promises</span>) </span>&#123;</span><br><span class="line">    promises = <span class="built_in">Array</span>.from(promises);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(promises.length===<span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>; i&lt;promises.length; i++) &#123;</span><br><span class="line">                <span class="built_in">Promise</span>.resolve(promises[i]).then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">                    resolve(data);</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;, err =&gt; &#123;</span><br><span class="line">                    reject(err);</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Promise-finally源码"><a href="#Promise-finally源码" class="headerlink" title="Promise.finally源码"></a>Promise.finally源码</h3><p><strong>不管成功还是失败，都会走到finally中,并且finally之后，还可以继续then。并且会将值原封不动的传递给后面的then。</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.prototype.finally_ = <span class="function"><span class="keyword">function</span> (<span class="params">callback</span>) </span>&#123;</span><br><span class="line">         <span class="comment">//  console.log(this);this指向promise这个实例</span></span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">this</span>.then(<span class="function">(<span class="params">value</span>) =&gt;</span> &#123;<span class="comment">//需要返回一个promise实例</span></span><br><span class="line">               <span class="keyword">return</span> <span class="built_in">Promise</span>.resolve(callback()).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                   <span class="keyword">return</span> value;<span class="comment">//成功态</span></span><br><span class="line">               &#125;);</span><br><span class="line">           &#125;, (err) =&gt; &#123;<span class="comment">//需要返回一个promise实例</span></span><br><span class="line">               <span class="keyword">return</span> <span class="built_in">Promise</span>.resolve(callback()).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                   <span class="keyword">throw</span> err<span class="comment">//失败态</span></span><br><span class="line">               &#125;)</span><br><span class="line">           &#125;)</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="built_in">Promise</span>.prototype.finally_()</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-React中的Fragment（性能优化）" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/08/15/React%E4%B8%AD%E7%9A%84Fragment%EF%BC%88%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%EF%BC%89/" class="article-date">
+  	<time datetime="2020-08-14T16:13:51.224Z" itemprop="datePublished">2020-08-15</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/15/React%E4%B8%AD%E7%9A%84Fragment%EF%BC%88%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%EF%BC%89/">
+        React中的Fragment（性能优化）
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="React中的Fragment（性能优化）"><a href="#React中的Fragment（性能优化）" class="headerlink" title="React中的Fragment（性能优化）"></a>React中的Fragment（性能优化）</h3><p><strong>代替div作为外层，可做不可见的包裹元素</strong></p>
+<ul>
+<li>一个组件往往要返回多个元素，同时，react有要求这些元素必须包裹在一个div里</li>
+<li>普遍解决办法是用div包裹，这样<code>增加了许多没必要的嵌套，增加了浏览器的渲染压力</code></li>
+<li>解决办法：eract 16 开始，ract支持返回数组</li>
+</ul>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> React from <span class="string">'react'</span>;</span><br><span class="line"> </span><br><span class="line">export <span class="keyword">default</span> <span class="keyword">function</span> () &#123;</span><br><span class="line">    <span class="keyword">return</span> [</span><br><span class="line">        <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>一步 01<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>,</span><br><span class="line">        <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>一步 02<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>,</span><br><span class="line">        <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>一步 03<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>,</span><br><span class="line">        <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>一步 04<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">    ];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>常用办法：<strong>Fragments</strong>，用来包裹元素作为最外层，减少dom层级</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        &lt;Fragment&gt;</span><br><span class="line">            &lt;div&gt;一步 <span class="number">01</span>&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">            &lt;div&gt;一步 02&lt;/</span>div&gt;</span><br><span class="line">            &lt;div&gt;一步 <span class="number">03</span>&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">            &lt;div&gt;一步 04&lt;/</span>div&gt;</span><br><span class="line">        &lt;<span class="regexp">/Fragment&gt;</span></span><br><span class="line"><span class="regexp">    );</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-面试--React中PureComponent原理与核心源码" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -258,7 +381,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>##面试—provide与inject用法</p>
-<h3 id="爷孙组件传递"><a href="#爷孙组件传递" class="headerlink" title="爷孙组件传递"></a>爷孙组件传递</h3><p><strong>以允许一个祖先组件向其所有子孙后代注入一个依赖，不论组件层次有多深，并在起上下游关系成立的时间里始终生效。</strong></p>
+<h3 id="爷孙组件传递"><a href="#爷孙组件传递" class="headerlink" title="爷孙组件传递"></a>爷孙组件传递</h3><p>不存在双向绑定，用inject注入的<br><strong>以允许一个祖先组件向其所有子孙后代注入一个依赖，不论组件层次有多深，并在起上下游关系成立的时间里始终生效。</strong></p>
 <ul>
 <li>使用场景：由于vue有$parent属性可以让子组件访问父组件。但孙组件想要访问祖先组件就比较困难。通过provide/inject可以轻松实现跨级访问祖先组件的数据</li>
 </ul>
@@ -697,149 +820,6 @@
       
         <h3 id="combineReducers源码"><a href="#combineReducers源码" class="headerlink" title="combineReducers源码"></a>combineReducers源码</h3><p>分析,这个方法是为了实现多个reducer的合并,因为实际开发过程中我们不可能只有一个组件一个reducer方法</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//这是合并reducer的方法,需要传入一个对象,这个对象成员就是每个reducer</span></span><br><span class="line"><span class="comment">//因为是合并所以最后要返回一个整合后的reducer方法</span></span><br><span class="line"><span class="keyword">let</span> combineReducers=<span class="function">(<span class="params">reducers</span>)=&gt;</span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">state=&#123;&#125;,action</span>)=&gt;</span>&#123;<span class="comment">//state第一次执行的时候是undefined,所以给它默认值一个空对象</span></span><br><span class="line">    <span class="keyword">let</span> obj=&#123;&#125;;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> key <span class="keyword">in</span> reducers)&#123;</span><br><span class="line">      obj[key]=reducers[key](state[key],action);</span><br><span class="line">      <span class="comment">//obj新增键值对,为reducers[key]当前键值对执行的返回值,当第一次执行时,state[key]为undefined,就用到了reducer中的state默认值,后期再执行就不是undefined了</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> obj; <span class="comment">//这个对象就包含了所有的值</span></span><br><span class="line">  &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-      
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-React-Redux核心源码" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2020/08/04/React-Redux%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81/" class="article-date">
-  	<time datetime="2020-08-04T15:38:51.554Z" itemprop="datePublished">2020-08-04</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/04/React-Redux%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81/">
-        React-Redux核心源码
-        
-      </a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="React-Redux核心源码"><a href="#React-Redux核心源码" class="headerlink" title="React-Redux核心源码"></a>React-Redux核心源码</h2><h3 id="核心知识点"><a href="#核心知识点" class="headerlink" title="核心知识点"></a>核心知识点</h3><ul>
-<li><strong>React Context(上下文)</strong></li>
-<li><strong>fn( )( ):高阶组件</strong></li>
-<li><strong>redux ：核心源码</strong></li>
-<li><strong>bindActionCreators封装</strong></li>
-<li><strong>发布订阅思想与取消订阅</strong><h3 id="Provider核心封装"><a href="#Provider核心封装" class="headerlink" title="Provider核心封装"></a>Provider核心封装</h3></li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Provider</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span></span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>()&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 定义上下文的数据类型</span></span><br><span class="line">    <span class="keyword">static</span> childContextTypes=&#123;</span><br><span class="line">        store:PropTypes.object</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 返回上下文的数据</span></span><br><span class="line">    getChildContext()&#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            store:<span class="keyword">this</span>.props.store<span class="comment">// 获取到行间属性store的属性值</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    render()&#123;</span><br><span class="line">        <span class="comment">// 把Provider这个组件里面嵌套的组件return出来，return 什么页面最终渲染什么；</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.props.children;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h3 id="connect核心源码"><a href="#connect核心源码" class="headerlink" title="connect核心源码"></a>connect核心源码</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> connect=<span class="function">(<span class="params">mapStateToProps,mapDispatchToProps</span>)=&gt;</span><span class="function">(<span class="params">Component</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span></span>&#123;</span><br><span class="line">        <span class="comment">// 第一个参数时props属性，第二个是context放数据</span></span><br><span class="line">        <span class="keyword">constructor</span>(props,context)&#123;</span><br><span class="line">            <span class="keyword">super</span>()</span><br><span class="line">            <span class="comment">// 执行，并把默认值赋予this.state</span></span><br><span class="line">            <span class="keyword">this</span>.state=mapStateToProps(context.store.getState())</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 所有的组件都在Provider中，利用组件contextTypes接收store;</span></span><br><span class="line">        <span class="keyword">static</span> contextTypes=&#123;</span><br><span class="line">            store:<span class="keyword">this</span>.contextTypes.object<span class="comment">//规定必须是对象数据格式的</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// bindActionCreators方法，实现this.fn()调用方法</span></span><br><span class="line">        bindActionCreators =<span class="function">(<span class="params">action,dispatch</span>)=&gt;</span>&#123;</span><br><span class="line">            <span class="keyword">let</span> obj = &#123;&#125;;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">let</span> key <span class="keyword">in</span> action)&#123;</span><br><span class="line">                obj[key]=<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">                    dispatch(action[key]())</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> obj;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 每当dispatch时，都会触发视图的更新</span></span><br><span class="line">        componentDidMount()&#123;</span><br><span class="line">            <span class="comment">//订阅更新函数，更新数据，触发数据更新</span></span><br><span class="line">            <span class="keyword">this</span>.unscribe=<span class="keyword">this</span>.context.store.subscribe(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">                <span class="comment">// 利用组件contextTypes接收store,从而可以拿到最新数据</span></span><br><span class="line">                <span class="keyword">this</span>.setState(mapDispatchToProps(<span class="keyword">this</span>.context.store.getState()))</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 取消订阅，组件销毁时，清空事件池</span></span><br><span class="line">        componentWillUnmount()&#123;</span><br><span class="line">            <span class="keyword">this</span>.unscribe();</span><br><span class="line">        &#125;</span><br><span class="line">        render()&#123;</span><br><span class="line">            <span class="keyword">this</span>.setState(mapStateToProps(<span class="keyword">this</span>.context.store.getState()))<span class="comment">//更新数据</span></span><br><span class="line">            <span class="keyword">let</span> h;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">typeof</span> mapDispatchToProps===<span class="string">"function"</span>)&#123;</span><br><span class="line">                h = mapDispatchToProps(<span class="keyword">this</span>.context.store.dispatch);</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="comment">// 如果直接传入actions，那么需要调用bindActionCreators方法</span></span><br><span class="line">                h = <span class="keyword">this</span>.bindActionCreators(mapDispatchToProps,<span class="keyword">this</span>.context.store.dispatch)</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// Component就是App组件；把store中state的数据传递给Component这个组件</span></span><br><span class="line">            <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">Component</span> &#123;<span class="attr">...this.state</span>&#125; &#123;<span class="attr">...this.h</span>&#125;&gt;</span><span class="tag">&lt;/<span class="name">Component</span>&gt;</span></span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Redux核心源码"><a href="#Redux核心源码" class="headerlink" title="Redux核心源码"></a>Redux核心源码</h3><p><strong>createStore方法核心要点</strong></p>
-<ul>
-<li>state的实现</li>
-<li>getState深克隆state,为了防止外界直接篡改state中的数据</li>
-<li>dispatch这个方法是派发动作修改state中的数据</li>
-<li>subscribe,订阅方法,跟着dispatch一起执行,且这个方法的返回值是取消订阅的方法</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createStore</span>(<span class="params">reducer</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> state;<span class="comment">//状态</span></span><br><span class="line">    <span class="keyword">let</span> listener=[]<span class="comment">//准备事件池</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">getSatate</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="comment">//克隆数据，既可以外界拿到，又防止直接修改数据</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">JSON</span>.parse(<span class="built_in">JSON</span>.stringify(state))</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">dispatch</span>(<span class="params">action</span>)</span>&#123;</span><br><span class="line">        state=reducer(state,action)<span class="comment">//action派发后，修改数据</span></span><br><span class="line">        listener.forEach(<span class="function"><span class="params">item</span>=&gt;</span>&#123;<span class="comment">//循环触发事件池中方法</span></span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">typeof</span> item===<span class="string">"function"</span>)&#123;</span><br><span class="line">                item()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">subscibe</span>(<span class="params">fn</span>)</span>&#123;</span><br><span class="line">        listener.push(fn)<span class="comment">//添加订阅</span></span><br><span class="line">        <span class="keyword">return</span> listener.filter(<span class="function"><span class="params">item</span>=&gt;</span>item!==fn)</span><br><span class="line">        <span class="comment">//当调用subscibe的返回值执行时，取消订阅该事件</span></span><br><span class="line">    &#125;</span><br><span class="line">    dispatch(&#123;&#125;)<span class="comment">//默认执行一次，将默认值写入store，</span></span><br><span class="line">    <span class="comment">// 后续用到&#123;&#125;.type，避免undefined.type报错，写入空对象</span></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        getState,</span><br><span class="line">        dispatch,</span><br><span class="line">        subscribe</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-      
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-js中的盒模型" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2020/08/04/js%E4%B8%AD%E7%9A%84%E7%9B%92%E6%A8%A1%E5%9E%8B/" class="article-date">
-  	<time datetime="2020-08-04T02:15:06.274Z" itemprop="datePublished">2020-08-04</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/04/js%E4%B8%AD%E7%9A%84%E7%9B%92%E6%A8%A1%E5%9E%8B/">
-        js中的盒模型
-        
-      </a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="js中的盒子模型13个"><a href="#js中的盒子模型13个" class="headerlink" title="js中的盒子模型13个"></a>js中的盒子模型13个</h3><p><strong><code>client系列</code></strong></p>
-<ul>
-<li><strong>clientwidth</strong>：width+左右两个padding值（可视化窗口的高度：）</li>
-<li><strong>clientheight</strong>：height+上下两个padding的值</li>
-<li><strong>clientleft/top</strong>: 左/上边框的宽度</li>
-</ul>
-<p><strong><code>scroll系列</code></strong></p>
-<ul>
-<li><strong>scrollwidth/height</strong>：在没有溢出的情况下，clientwidth和scrollwidth是一样的；再有溢出的情况下：=左/上padding+内容真实高度</li>
-<li><strong>scrolltop/scrollleft</strong>：当前滚动条横向/纵向卷曲的高度（<code>可修改属性</code>）</li>
-</ul>
-<p><strong><code>offset系列</code></strong></p>
-<ul>
-<li><strong>offestparent</strong>：父级参照物，当加上position属性（relative，absolute，fiixed）会让该元素所有子孙元素指向当前这个元素</li>
-<li><strong>offsetleft offsettop</strong>：左上偏移量，盒子的外边框到父级参照物内边框的距离；</li>
-<li><strong>offsetwidth/height</strong>: 盒子总宽/高度=盒子的左/上–右/下边框的外边框</li>
-</ul>
-
       
     </div>
     

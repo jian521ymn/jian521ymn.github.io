@@ -169,6 +169,149 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-React-Redux核心源码" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/08/04/React-Redux%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81/" class="article-date">
+  	<time datetime="2020-08-04T15:38:51.554Z" itemprop="datePublished">2020-08-04</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/04/React-Redux%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81/">
+        React-Redux核心源码
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="React-Redux核心源码"><a href="#React-Redux核心源码" class="headerlink" title="React-Redux核心源码"></a>React-Redux核心源码</h2><h3 id="核心知识点"><a href="#核心知识点" class="headerlink" title="核心知识点"></a>核心知识点</h3><ul>
+<li><strong>React Context(上下文)</strong></li>
+<li><strong>fn( )( ):高阶组件</strong></li>
+<li><strong>redux ：核心源码</strong></li>
+<li><strong>bindActionCreators封装</strong></li>
+<li><strong>发布订阅思想与取消订阅</strong><h3 id="Provider核心封装"><a href="#Provider核心封装" class="headerlink" title="Provider核心封装"></a>Provider核心封装</h3></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Provider</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span></span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>()&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 定义上下文的数据类型</span></span><br><span class="line">    <span class="keyword">static</span> childContextTypes=&#123;</span><br><span class="line">        store:PropTypes.object</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 返回上下文的数据</span></span><br><span class="line">    getChildContext()&#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            store:<span class="keyword">this</span>.props.store<span class="comment">// 获取到行间属性store的属性值</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    render()&#123;</span><br><span class="line">        <span class="comment">// 把Provider这个组件里面嵌套的组件return出来，return 什么页面最终渲染什么；</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.props.children;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="connect核心源码"><a href="#connect核心源码" class="headerlink" title="connect核心源码"></a>connect核心源码</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> connect=<span class="function">(<span class="params">mapStateToProps,mapDispatchToProps</span>)=&gt;</span><span class="function">(<span class="params">Component</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span></span>&#123;</span><br><span class="line">        <span class="comment">// 第一个参数时props属性，第二个是context放数据</span></span><br><span class="line">        <span class="keyword">constructor</span>(props,context)&#123;</span><br><span class="line">            <span class="keyword">super</span>()</span><br><span class="line">            <span class="comment">// 执行，并把默认值赋予this.state</span></span><br><span class="line">            <span class="keyword">this</span>.state=mapStateToProps(context.store.getState())</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 所有的组件都在Provider中，利用组件contextTypes接收store;</span></span><br><span class="line">        <span class="keyword">static</span> contextTypes=&#123;</span><br><span class="line">            store:<span class="keyword">this</span>.contextTypes.object<span class="comment">//规定必须是对象数据格式的</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// bindActionCreators方法，实现this.fn()调用方法</span></span><br><span class="line">        bindActionCreators =<span class="function">(<span class="params">action,dispatch</span>)=&gt;</span>&#123;</span><br><span class="line">            <span class="keyword">let</span> obj = &#123;&#125;;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">let</span> key <span class="keyword">in</span> action)&#123;</span><br><span class="line">                obj[key]=<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">                    dispatch(action[key]())</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> obj;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 每当dispatch时，都会触发视图的更新</span></span><br><span class="line">        componentDidMount()&#123;</span><br><span class="line">            <span class="comment">//订阅更新函数，更新数据，触发数据更新</span></span><br><span class="line">            <span class="keyword">this</span>.unscribe=<span class="keyword">this</span>.context.store.subscribe(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">                <span class="comment">// 利用组件contextTypes接收store,从而可以拿到最新数据</span></span><br><span class="line">                <span class="keyword">this</span>.setState(mapDispatchToProps(<span class="keyword">this</span>.context.store.getState()))</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 取消订阅，组件销毁时，清空事件池</span></span><br><span class="line">        componentWillUnmount()&#123;</span><br><span class="line">            <span class="keyword">this</span>.unscribe();</span><br><span class="line">        &#125;</span><br><span class="line">        render()&#123;</span><br><span class="line">            <span class="keyword">this</span>.setState(mapStateToProps(<span class="keyword">this</span>.context.store.getState()))<span class="comment">//更新数据</span></span><br><span class="line">            <span class="keyword">let</span> h;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">typeof</span> mapDispatchToProps===<span class="string">"function"</span>)&#123;</span><br><span class="line">                h = mapDispatchToProps(<span class="keyword">this</span>.context.store.dispatch);</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="comment">// 如果直接传入actions，那么需要调用bindActionCreators方法</span></span><br><span class="line">                h = <span class="keyword">this</span>.bindActionCreators(mapDispatchToProps,<span class="keyword">this</span>.context.store.dispatch)</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// Component就是App组件；把store中state的数据传递给Component这个组件</span></span><br><span class="line">            <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">Component</span> &#123;<span class="attr">...this.state</span>&#125; &#123;<span class="attr">...this.h</span>&#125;&gt;</span><span class="tag">&lt;/<span class="name">Component</span>&gt;</span></span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Redux核心源码"><a href="#Redux核心源码" class="headerlink" title="Redux核心源码"></a>Redux核心源码</h3><p><strong>createStore方法核心要点</strong></p>
+<ul>
+<li>state的实现</li>
+<li>getState深克隆state,为了防止外界直接篡改state中的数据</li>
+<li>dispatch这个方法是派发动作修改state中的数据</li>
+<li>subscribe,订阅方法,跟着dispatch一起执行,且这个方法的返回值是取消订阅的方法</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createStore</span>(<span class="params">reducer</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> state;<span class="comment">//状态</span></span><br><span class="line">    <span class="keyword">let</span> listener=[]<span class="comment">//准备事件池</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">getSatate</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="comment">//克隆数据，既可以外界拿到，又防止直接修改数据</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">JSON</span>.parse(<span class="built_in">JSON</span>.stringify(state))</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">dispatch</span>(<span class="params">action</span>)</span>&#123;</span><br><span class="line">        state=reducer(state,action)<span class="comment">//action派发后，修改数据</span></span><br><span class="line">        listener.forEach(<span class="function"><span class="params">item</span>=&gt;</span>&#123;<span class="comment">//循环触发事件池中方法</span></span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">typeof</span> item===<span class="string">"function"</span>)&#123;</span><br><span class="line">                item()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">subscibe</span>(<span class="params">fn</span>)</span>&#123;</span><br><span class="line">        listener.push(fn)<span class="comment">//添加订阅</span></span><br><span class="line">        <span class="keyword">return</span> listener.filter(<span class="function"><span class="params">item</span>=&gt;</span>item!==fn)</span><br><span class="line">        <span class="comment">//当调用subscibe的返回值执行时，取消订阅该事件</span></span><br><span class="line">    &#125;</span><br><span class="line">    dispatch(&#123;&#125;)<span class="comment">//默认执行一次，将默认值写入store，</span></span><br><span class="line">    <span class="comment">// 后续用到&#123;&#125;.type，避免undefined.type报错，写入空对象</span></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        getState,</span><br><span class="line">        dispatch,</span><br><span class="line">        subscribe</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-js中的盒模型" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/08/04/js%E4%B8%AD%E7%9A%84%E7%9B%92%E6%A8%A1%E5%9E%8B/" class="article-date">
+  	<time datetime="2020-08-04T02:15:06.274Z" itemprop="datePublished">2020-08-04</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/04/js%E4%B8%AD%E7%9A%84%E7%9B%92%E6%A8%A1%E5%9E%8B/">
+        js中的盒模型
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="js中的盒子模型13个"><a href="#js中的盒子模型13个" class="headerlink" title="js中的盒子模型13个"></a>js中的盒子模型13个</h3><p><strong><code>client系列</code></strong></p>
+<ul>
+<li><strong>clientwidth</strong>：width+左右两个padding值（可视化窗口的高度：）</li>
+<li><strong>clientheight</strong>：height+上下两个padding的值</li>
+<li><strong>clientleft/top</strong>: 左/上边框的宽度</li>
+</ul>
+<p><strong><code>scroll系列</code></strong></p>
+<ul>
+<li><strong>scrollwidth/height</strong>：在没有溢出的情况下，clientwidth和scrollwidth是一样的；再有溢出的情况下：=左/上padding+内容真实高度</li>
+<li><strong>scrolltop/scrollleft</strong>：当前滚动条横向/纵向卷曲的高度（<code>可修改属性</code>）</li>
+</ul>
+<p><strong><code>offset系列</code></strong></p>
+<ul>
+<li><strong>offestparent</strong>：父级参照物，当加上position属性（relative，absolute，fiixed）会让该元素所有子孙元素指向当前这个元素</li>
+<li><strong>offsetleft offsettop</strong>：左上偏移量，盒子的外边框到父级参照物内边框的距离；</li>
+<li><strong>offsetwidth/height</strong>: 盒子总宽/高度=盒子的左/上–右/下边框的外边框</li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-深度克隆详解以及实现" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
