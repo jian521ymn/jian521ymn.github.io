@@ -169,6 +169,112 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-条形码的插件生成" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/12/30/%E6%9D%A1%E5%BD%A2%E7%A0%81%E7%9A%84%E6%8F%92%E4%BB%B6%E7%94%9F%E6%88%90/" class="article-date">
+  	<time datetime="2020-12-29T16:44:10.264Z" itemprop="datePublished">2020-12-30</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/12/30/%E6%9D%A1%E5%BD%A2%E7%A0%81%E7%9A%84%E6%8F%92%E4%BB%B6%E7%94%9F%E6%88%90/">
+        条形码的插件生成
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="React-生成二维码-条形码的插件"><a href="#React-生成二维码-条形码的插件" class="headerlink" title="React 生成二维码/条形码的插件"></a>React 生成二维码/条形码的插件</h3><p>####安装</p>
+<blockquote>
+<p>npm install qrcode.react –save</p>
+</blockquote>
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><blockquote>
+<p>import QRCode from ‘qrcode.react’;</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">React.render(</span><br><span class="line">  &lt;QRCode value=<span class="string">"https://jian521ymn.github.io/"</span> /&gt;,</span><br><span class="line">  mountNode</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h4 id="属性及其用法"><a href="#属性及其用法" class="headerlink" title="属性及其用法"></a>属性及其用法</h4><table>
+<thead>
+<tr>
+<th align="left">prop</th>
+<th align="right">type</th>
+<th align="center">default value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">value</td>
+<td align="right">string</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="left">renderAs</td>
+<td align="right">string (‘canvas’ ‘svg’)</td>
+<td align="center">‘canvas’</td>
+</tr>
+<tr>
+<td align="left">size</td>
+<td align="right">number</td>
+<td align="center">128</td>
+</tr>
+<tr>
+<td align="left">bgColor</td>
+<td align="right">string (css color)</td>
+<td align="center">“#FFFFFF”</td>
+</tr>
+<tr>
+<td align="left">fgColor</td>
+<td align="right">string (css color)</td>
+<td align="center">“#000000”</td>
+</tr>
+<tr>
+<td align="left">level</td>
+<td align="right">string (‘L’ ‘M’ ‘Q’ ‘H’)</td>
+<td align="center">‘L’</td>
+</tr>
+<tr>
+<td align="left">includeMargin</td>
+<td align="right">boolean</td>
+<td align="center">false</td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-react 内存泄露常见问题解决方案" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -754,107 +860,9 @@
 
 
   
-    <article id="post-常用事件合集" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2020/08/05/%E5%B8%B8%E7%94%A8%E4%BA%8B%E4%BB%B6%E5%90%88%E9%9B%86/" class="article-date">
-  	<time datetime="2020-08-05T13:24:07.359Z" itemprop="datePublished">2020-08-05</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/05/%E5%B8%B8%E7%94%A8%E4%BA%8B%E4%BB%B6%E5%90%88%E9%9B%86/">
-        常用事件合集
-        
-      </a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="鼠标事件"><a href="#鼠标事件" class="headerlink" title="鼠标事件"></a>鼠标事件</h3><ul>
-<li>click：手机端为点击</li>
-<li>dblclick：双击</li>
-<li>mousedown；按下</li>
-<li>mouseup；抬起</li>
-<li>mousrove：鼠标移动</li>
-<li>mouseover：鼠标滑动</li>
-<li>mouseout：鼠标画出</li>
-<li>mousenter：鼠标进入</li>
-<li>mouseleave：鼠标离开 </li>
-<li>mousewhell：鼠标滚轮滚动<h3 id="键盘事件"><a href="#键盘事件" class="headerlink" title="键盘事件"></a>键盘事件</h3></li>
-<li>keydown：按下某个键</li>
-<li>keyup：释放任意键</li>
-<li>keypress：除shift，fn，capslock意外其他键，按住连续触发<h3 id="移动端手指事件"><a href="#移动端手指事件" class="headerlink" title="移动端手指事件"></a>移动端手指事件</h3></li>
-<li>单手事件模型touch</li>
-<li>touchmove：手指移动</li>
-<li>touchend：手指松开</li>
-<li>touchshart：手指按下 </li>
-<li>touchcancel：操作取消（非正常情况下）</li>
-<li>多手指事件模型gesture</li>
-<li>gesturestart：</li>
-<li>gesturecahnge/gestureupdate</li>
-<li>gestureend</li>
-<li>gesturecancel<h3 id="表单元素常用事件"><a href="#表单元素常用事件" class="headerlink" title="表单元素常用事件"></a>表单元素常用事件</h3></li>
-<li>focus：获取焦点</li>
-<li>blur：失去焦点</li>
-<li>change：内容改变</li>
-<li>oninput；内容改变就改变</li>
-<li>keycofde：键盘对象的码</li>
-<li>onkeypress：按下并释放任何数字键发生</li>
-<li>音视频常用事件 </li>
-<li>canplay:可以播放（没加载完可能卡顿）</li>
-<li>canplythrough：可以播放（资源已经加载完，不会卡顿）</li>
-<li>play：开始播放</li>
-<li>playing：播放中</li>
-<li>pushe：播发中<h3 id="其他常用事件"><a href="#其他常用事件" class="headerlink" title="其他常用事件"></a>其他常用事件</h3></li>
-<li>olad：加载成功</li>
-<li>unload：资源已经卸载</li>
-<li>beforeunload：当前页面关闭之前 </li>
-<li>error：资源加载失败</li>
-<li>scroll：滚动事件</li>
-<li>readstatechange ajax请求状态改变事件</li>
-<li>contextmenu</li>
-</ul>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-      
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &amp;raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &amp;raquo;</a>
     </nav>
   
 </div>
