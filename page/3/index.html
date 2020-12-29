@@ -169,6 +169,180 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-数组的15个方法总结" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/06/05/%E6%95%B0%E7%BB%84%E7%9A%8415%E4%B8%AA%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/" class="article-date">
+  	<time datetime="2018-06-05T12:29:10.612Z" itemprop="datePublished">2018-06-05</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/05/%E6%95%B0%E7%BB%84%E7%9A%8415%E4%B8%AA%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/">
+        数组的15个方法总结
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="数组的方法"><a href="#数组的方法" class="headerlink" title="数组的方法"></a>数组的方法</h3><ul>
+<li>1.push ;<ul>
+<li>数组后新增一项或者多项</li>
+<li>需要传参</li>
+<li>新增以后数组的长度</li>
+<li>原数组发生改变</li>
+</ul>
+</li>
+<li>2.pop：<br>   删除数组的最后一项<ul>
+<li>不需要传参</li>
+<li>删除的那一项</li>
+<li>原有数组发生改变</li>
+</ul>
+</li>
+<li>3.unshift：<ul>
+<li>数组开头新增一项</li>
+<li>需要传参</li>
+<li>新增以后数组的长度</li>
+<li>原数组发生改变</li>
+</ul>
+</li>
+<li>4.shift：<ul>
+<li>删除数组的第一项</li>
+<li>不需要传参</li>
+<li>删除的那一项</li>
+<li>原数组发生改变</li>
+</ul>
+</li>
+<li>5.splice：<ul>
+<li>删除数组的某几项</li>
+<li>splice（m,n）<ul>
+<li>splice（m,n）从索引M开始，删除N个</li>
+<li>splice（m），从m开始，删除后面所有</li>
+<li>splice（m，n，z）从m开始，删除n个，用z替代</li>
+<li>splice（m，0，n）把n项添加到m的前面+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>6.slice截取<ul>
+<li>截取数组中的一项</li>
+<li>需要传参<ul>
+<li>slice（m，n）从索引m开始，截取到索引n，不包括n。</li>
+<li>slice（m）从索引m开始，截取到数组的末尾，m》n，空数组；</li>
+<li>slice（m，n），如果n&lt;0,则slice（m，length+n），如果m，n都为0（length+m，length+n）</li>
+</ul>
+</li>
+<li>截取的哪几项</li>
+<li>原有不发生改变</li>
+</ul>
+</li>
+<li>7.sort排序<ul>
+<li>排序</li>
+<li>需要参数<ul>
+<li>ary.sort(function(a，b){   return a-b;  }正序</li>
+<li>ary.sort(function(a，b){   return b-a;  }到序</li>
+</ul>
+</li>
+<li>排序以后的数组</li>
+<li>原有数组发生改变</li>
+</ul>
+</li>
+<li>8.reverse：反转<pre><code>+ 将数组反转
++ 不需要传参
++ 反转之后的数组
++ 原有数组改变</code></pre></li>
+<li>9.concat：拼接<ul>
+<li>数组的拼接</li>
+<li>需要传参</li>
+<li>拼接后的数组</li>
+<li>原有数组不变</li>
+</ul>
+</li>
+<li>10.join（“”）<ul>
+<li>将数组成员按照特定的字符串连接到一起</li>
+<li>需要传参</li>
+<li>返回一个连接字符串</li>
+<li>原有数组不发生改变</li>
+</ul>
+</li>
+<li>11.indexof<ul>
+<li>找到数组成员第一次出现对应的索引，如果不存在，返回值-1，每次只能检测一个</li>
+<li>需要传参</li>
+<li>返回数组成员第一次出现的索引</li>
+<li>原有数组不改变</li>
+<li>indexof（20,2）寻找200，从第2个索引开始找</li>
+</ul>
+</li>
+<li>12.lastindxof<ul>
+<li>找到数组成员在数组中最后一次出现对应的索引位置，如果不存在。返回-1，所以常用来判断该项是否存在</li>
+<li>需要传参</li>
+<li>返回数组成员出现的索引</li>
+<li>原数组不改变</li>
+</ul>
+</li>
+<li>13.map：映射，循环<ul>
+<li>`  var len=ary.map(function(item,index){<pre><code>console.log(item,index);
+/* item函数的每一项，index是索引 */ `</code></pre></li>
+<li>输出每一项</li>
+<li>需要传参</li>
+<li>返回值是一个映射新数组</li>
+<li>原数组不变</li>
+</ul>
+</li>
+<li>14.forEach循环<ul>
+<li>没有return，返回值是undefined</li>
+<li>var len=ary.foreach(function(item,index){</li>
+<li>需要传参 </li>
+</ul>
+</li>
+<li>15.toString：转字符串<ul>
+<li>转字符串</li>
+</ul>
+</li>
+<li>不需要传参<ul>
+<li>返回值是字符串</li>
+<li>原数组改变</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-不仅一番寒彻骨，怎得梅花扑鼻香" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
