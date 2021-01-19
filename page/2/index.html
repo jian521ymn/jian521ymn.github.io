@@ -169,6 +169,148 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-vue生命周期六连问" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/08/11/vue%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%85%AD%E8%BF%9E%E9%97%AE/" class="article-date">
+  	<time datetime="2020-08-10T16:34:51.261Z" itemprop="datePublished">2020-08-11</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/11/vue%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%85%AD%E8%BF%9E%E9%97%AE/">
+        vue生命周期六连问
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="vue生命周期六连问"><a href="#vue生命周期六连问" class="headerlink" title="vue生命周期六连问"></a>vue生命周期六连问</h3><p><strong>1.什么是vue生命周期?</strong></p>
+<ul>
+<li>vue实例从创建到销毁的过程，就是生命周期。从开始创建，初始化数据，编译模板，挂载dom》渲染，更新》渲染，销毁等一系列过程，称之为vue的生命周期。</li>
+</ul>
+<p><strong>2.vue的生命周期作用是什么？</strong></p>
+<ul>
+<li>他的生命周期中有很多个事件钩子，让我们在控制整个vue实例的过程更容易形成好的逻辑。</li>
+</ul>
+<p><strong>3.vue生命周期分为几个阶段？</strong></p>
+<ul>
+<li><strong>beforeCreate</strong>(创建前)：数据监听和初始化事件还未开始</li>
+<li><strong>created</strong>(创建后)：完成数据观测，可以获取date，methods里的值，$el属性还未显示出来</li>
+<li><strong>beforeMount</strong>(载入前)：在挂载开始之前被调用，相关的render函数首次被调用，实例完成，模板编译，生成html，但没挂载到页面上去</li>
+<li><strong>mounted</strong>(载入后)：实例挂载成功，el被vm.$el替换，页面被新数据渲染成功</li>
+<li><strong>beforeDestroy</strong>（数据销毁前），实例销毁前调用，实例仍可用</li>
+<li><strong>destoryed</strong>:所有时间监听者会被移除，子实例注销</li>
+</ul>
+<p><strong>4.第一次页面加载会触发那几个钩子</strong></p>
+<ul>
+<li><strong>beforecreat，createdm，beforemount，ounted</strong></li>
+<li><strong>所有钩子函数：beforecreat，created，beforemount，mounted，beforeDestroy，destoryed，activeted，deactiveted</strong></li>
+</ul>
+<p><strong>5.dom渲染在哪一步中完成的</strong></p>
+<ul>
+<li><strong>在mounted中，组件挂载到实例</strong></li>
+</ul>
+<p><strong>6.如何异步拿到dom或者created中拿到dom</strong></p>
+<ul>
+<li>Vue.nextTick，可以异步拿到数据，他是等到dom数据更新后，再回执行</li>
+<li>操作需要使用随数据改变而改变的DOM结构的时候，</li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-双向绑定原理" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/08/11/%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A%E5%8E%9F%E7%90%86/" class="article-date">
+  	<time datetime="2020-08-10T16:30:14.480Z" itemprop="datePublished">2020-08-11</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/11/%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A%E5%8E%9F%E7%90%86/">
+        双向绑定原理
+        
+      </a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="双向绑定原理及其源码"><a href="#双向绑定原理及其源码" class="headerlink" title="双向绑定原理及其源码"></a>双向绑定原理及其源码</h3><ul>
+<li><strong>实际上model和视图不能直接通讯，需要通过vm进行数据传递，vm中有一个观察者，当model中数据发生改变以后*，会通知视图进行试图更新，当视图发生改变时，vm也能监听到视图的变化，通过元素的dom事件进行监听视图是否发生改变，如果改变，通知数据发生改变</strong><h3 id="双向绑定源码"><a href="#双向绑定源码" class="headerlink" title="双向绑定源码"></a>双向绑定源码</h3></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">observer</span>(<span class="params">data</span>) </span>&#123;<span class="comment">//数据劫持</span></span><br><span class="line">           <span class="keyword">if</span> (<span class="keyword">typeof</span> data !== <span class="string">"object"</span>) <span class="keyword">return</span><span class="comment">//递归终止条件</span></span><br><span class="line">           <span class="keyword">let</span> keys = <span class="built_in">Object</span>.keys(data)</span><br><span class="line">           keys.forEach(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">               defineReactive(data, key, data[key])</span><br><span class="line">           &#125;)</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// -------------------------------------</span></span><br><span class="line">       <span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span>(<span class="params">obj, key, value</span>) </span>&#123;<span class="comment">//监听方法，data=&gt;obj所有数据，key所有属性名，calue属性值</span></span><br><span class="line">           observer(value);<span class="comment">//如果value是对象，递归</span></span><br><span class="line">           <span class="keyword">let</span> dep = <span class="keyword">new</span> Dep<span class="comment">// data中一个属性对应一个dep事件池</span></span><br><span class="line">           <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">               <span class="keyword">get</span>() &#123;<span class="comment">//获取值时触发</span></span><br><span class="line">                   <span class="keyword">if</span> (Dep.curWatcher) &#123;</span><br><span class="line">                       dep.adddep(Dep.curWatcher)</span><br><span class="line">                   &#125;</span><br><span class="line">                   <span class="keyword">return</span> value</span><br><span class="line">               &#125;,</span><br><span class="line">               <span class="keyword">set</span>(newvalue) &#123;<span class="comment">//属性值改变时触发</span></span><br><span class="line">                   <span class="keyword">if</span> (newvalue !== value) &#123;</span><br><span class="line">                       value = newvalue</span><br><span class="line">                       observer(value)<span class="comment">//新改得的值，增加监听</span></span><br><span class="line">                       dep.notify();</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;)</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// -------------------------------------</span></span><br><span class="line">       <span class="comment">// 实现模板的编译；把带有v-model或者&#123;&#123;&#125;&#125;这种模板编译成真实的DOMd</span></span><br><span class="line">       <span class="function"><span class="keyword">function</span> <span class="title">nodeToFragment</span>(<span class="params">node, vm</span>) </span>&#123;</span><br><span class="line">           <span class="keyword">let</span> frament = <span class="built_in">document</span>.createDocumentFragment()<span class="comment">//文档碎片存值</span></span><br><span class="line">           <span class="keyword">let</span> child = node.firstChild</span><br><span class="line">           <span class="keyword">while</span> (child) &#123;</span><br><span class="line">               <span class="comment">// console.log(child);</span></span><br><span class="line">               frament.appendChild(child);</span><br><span class="line">               compile(child, vm)<span class="comment">//拿到每一个节点解析指令</span></span><br><span class="line">               child = node.firstChild</span><br><span class="line">           &#125;</span><br><span class="line">           node.appendChild(frament)<span class="comment">//把解析后的文件放回去</span></span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// -------------------------------------</span></span><br><span class="line">       <span class="function"><span class="keyword">function</span> <span class="title">compile</span>(<span class="params">node, vm</span>) </span>&#123;</span><br><span class="line">           <span class="keyword">if</span> (node.nodeType === <span class="number">1</span>) &#123;<span class="comment">//判断是不是元素节点</span></span><br><span class="line">               <span class="keyword">let</span> attrs = node.attributes;<span class="comment">//获取所有行间属性,是个类数组</span></span><br><span class="line">               [...attrs].forEach(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">                   <span class="comment">// item.nodeName :行间属性名</span></span><br><span class="line">                   <span class="comment">// item.value : 行间的属性值</span></span><br><span class="line">                   <span class="keyword">if</span> (<span class="regexp">/^v\-/</span>.test(item.nodeName)) &#123;<span class="comment">//正则匹配下指令</span></span><br><span class="line">                       <span class="keyword">let</span> itemkey = item.nodeValue<span class="comment">//获取v-属性的属性值</span></span><br><span class="line">                       <span class="keyword">let</span> val = vm._data[itemkey]<span class="comment">//从date实例中获取name值</span></span><br><span class="line">                       node.value = val<span class="comment">//获取到的值给元素的value</span></span><br><span class="line">                       <span class="keyword">new</span> Watcher(node, vm, itemkey)<span class="comment">//创造一个wachter实例，把值存起来</span></span><br><span class="line">                       <span class="comment">//node=&gt;子元素，vm=&gt;data数据，itemkey=&gt;v-后面的属性值</span></span><br><span class="line">                       node.addEventListener(<span class="string">"input"</span>, (e) =&gt; &#123;</span><br><span class="line">                           <span class="comment">// 把input框的value值赋值给vm的_data中属性名是valname的属性值；</span></span><br><span class="line">                           vm._data[itemkey] = e.target.value</span><br><span class="line">                       &#125;)</span><br><span class="line"></span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;);</span><br><span class="line">               <span class="comment">// node : 对node所有的子孙节点进行行间的处理；利用了递归；自动终止</span></span><br><span class="line">               [...node.childNodes].forEach(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">                   compile(item, vm)</span><br><span class="line">               &#125;)</span><br><span class="line">           &#125; <span class="keyword">else</span> &#123;<span class="comment">//文本节点处理</span></span><br><span class="line">               <span class="comment">// console.dir(node.nodeValue);</span></span><br><span class="line">               <span class="keyword">let</span> str = node.nodeValue</span><br><span class="line">               node.str = str</span><br><span class="line">               <span class="keyword">if</span> (<span class="regexp">/\&#123;\&#123;(.+?)\&#125;\&#125;/</span>.test(str)) &#123;</span><br><span class="line">                   str = str.replace(<span class="regexp">/\&#123;\&#123;(.+?)\&#125;\&#125;/g</span>, (a, b) =&gt; &#123;</span><br><span class="line">                       <span class="comment">// a:整个大正则捕获的内容   b: 第一个小括号捕获的内容</span></span><br><span class="line">                       b = b.trim()</span><br><span class="line">                       <span class="keyword">new</span> Watcher(node, vm, b);</span><br><span class="line">                       <span class="keyword">return</span> vm._data[b];</span><br><span class="line">                   &#125;)</span><br><span class="line">               &#125;</span><br><span class="line">               node.nodeValue = str<span class="comment">//data中的值赋值到文本中</span></span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// -------------------------------------</span></span><br><span class="line">       <span class="class"><span class="keyword">class</span> <span class="title">Watcher</span> </span>&#123;</span><br><span class="line">           <span class="comment">// 每new一次，都会执行一次constructor</span></span><br><span class="line">           <span class="keyword">constructor</span>(node, vm, key) &#123;</span><br><span class="line">               Dep.curWatcher = <span class="keyword">this</span>;<span class="comment">//this是wacther的实例</span></span><br><span class="line">               <span class="keyword">this</span>.node = node</span><br><span class="line">               <span class="keyword">this</span>.vm = vm;</span><br><span class="line">               <span class="keyword">this</span>.key = key;</span><br><span class="line">               <span class="keyword">this</span>.getDate()</span><br><span class="line">               <span class="comment">// 在赋值null之前，一定要重新执行一次get方法；</span></span><br><span class="line">               Dep.curWatcher = <span class="literal">null</span>;</span><br><span class="line">           &#125;</span><br><span class="line">           updata() &#123;<span class="comment">// update是要更新node;通过实例取获取这个节点和最新的值</span></span><br><span class="line">               <span class="keyword">this</span>.getDate();<span class="comment">// 获取最新的data中的值；</span></span><br><span class="line">               <span class="keyword">if</span>(<span class="keyword">this</span>.node.nodeType===<span class="number">1</span>)&#123;</span><br><span class="line">                   <span class="keyword">this</span>.node.value = <span class="keyword">this</span>.value;</span><br><span class="line">               &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                   <span class="keyword">let</span>  str = <span class="keyword">this</span>.node.str; </span><br><span class="line">                   str  = str.replace(<span class="regexp">/\&#123;\&#123;(.+?)\&#125;\&#125;/g</span>,(a,b)=&gt;&#123;</span><br><span class="line">                       <span class="comment">// b = name</span></span><br><span class="line">                       b = b.trim();</span><br><span class="line">                       <span class="keyword">return</span> <span class="keyword">this</span>.vm._data[b];</span><br><span class="line">                   &#125;);</span><br><span class="line">                   <span class="keyword">this</span>.node.nodeValue = str;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">           getDate() &#123;<span class="comment">// 重新获取一次_data中这个属性的属性值，那么会触发get方法，</span></span><br><span class="line">               <span class="keyword">this</span>.value = <span class="keyword">this</span>.vm._data[<span class="keyword">this</span>.key];</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// -------------------------------------</span></span><br><span class="line">       <span class="class"><span class="keyword">class</span> <span class="title">Dep</span> </span>&#123;</span><br><span class="line">           <span class="keyword">constructor</span>() &#123;</span><br><span class="line">               <span class="keyword">this</span>.subs = [];</span><br><span class="line">           &#125;</span><br><span class="line">           adddep(sub) &#123;<span class="comment">//订阅用</span></span><br><span class="line">               <span class="keyword">this</span>.subs.push(sub);</span><br><span class="line">           &#125;</span><br><span class="line">           notify() &#123;<span class="comment">//发布用</span></span><br><span class="line">               <span class="keyword">this</span>.subs.forEach(<span class="function"><span class="params">item</span> =&gt;</span> &#123;<span class="comment">// item 也是watcher的实例</span></span><br><span class="line">                   item.updata();</span><br><span class="line">               &#125;);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// -------------------------------------</span></span><br><span class="line">       <span class="function"><span class="keyword">function</span> <span class="title">Vue</span>(<span class="params">options</span>) </span>&#123;</span><br><span class="line">           <span class="keyword">this</span>.$el = <span class="built_in">document</span>.querySelector(options.el)</span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> options.data) &#123;</span><br><span class="line">               <span class="keyword">this</span>._data = <span class="keyword">typeof</span> options.data === <span class="string">"function"</span> ? options.data() : options.data</span><br><span class="line">           &#125;</span><br><span class="line">           observer(<span class="keyword">this</span>._data)<span class="comment">//数据劫持</span></span><br><span class="line">           nodeToFragment(<span class="keyword">this</span>.$el, <span class="keyword">this</span>)<span class="comment">//指令解析</span></span><br><span class="line">           <span class="comment">//this.$el=&gt;元素，this=&gt;vue实例</span></span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">let</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">           el: <span class="string">"#app"</span>,</span><br><span class="line">           data: &#123;</span><br><span class="line">               name: <span class="string">"zfpx"</span>,</span><br><span class="line">               age: &#123;</span><br><span class="line">                   a: <span class="number">1</span></span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;)</span><br><span class="line">       <span class="built_in">console</span>.log(vm);</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+      
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-数组扁平化" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -719,141 +861,6 @@
 
 
   
-    <article id="post-面向对象原型链与与继承 " class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2019/08/05/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%8E%9F%E5%9E%8B%E9%93%BE%E4%B8%8E%E4%B8%8E%E7%BB%A7%E6%89%BF%20/" class="article-date">
-  	<time datetime="2019-08-05T12:17:20.184Z" itemprop="datePublished">2019-08-05</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/05/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%8E%9F%E5%9E%8B%E9%93%BE%E4%B8%8E%E4%B8%8E%E7%BB%A7%E6%89%BF%20/">
-        面向对象原型链与与继承 
-        
-      </a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="原型三句大拿（记住这三句，包你一通到底）"><a href="#原型三句大拿（记住这三句，包你一通到底）" class="headerlink" title="原型三句大拿（记住这三句，包你一通到底）"></a>原型三句大拿（记住这三句，包你一通到底）</h3><ul>
-<li><strong>每个函数天生自带一个prototype属性，这个属性的只是一个对象</strong></li>
-<li><strong>prototype的属性值天生自带一个constructor属性，其属性值就是当前原型所属的类</strong></li>
-<li><strong>每一个实例都天生自带–proto–属性，这个属性的属性值指向当前实例所属类的原型</strong><h3 id="原型链形成"><a href="#原型链形成" class="headerlink" title="原型链形成"></a>原型链形成</h3></li>
-</ul>
-<p><strong>当获取对象的属性名对应的属性值时，先找自己的私有属性；如果没有回默认通过<strong>proto</strong>向当前类的原型查找。如果原型也不存在，那么会通过原型的<strong>proto</strong>向继续向上寻找，知道找到object的原型位置，如果也没有，那么就会输出undefined；这样一级一级向上寻找，就会形成原型链。</strong></p>
-<h3 id="四大继承模式"><a href="#四大继承模式" class="headerlink" title="四大继承模式"></a>四大继承模式</h3><ul>
-<li><strong><code>原型模式</code></strong>：<strong>把类A产生的实例赋值给类B的原型，那么类b的实例就可以使用a的私有属性和共有属性。这种继承方式就是原型继承。</strong></li>
-<li><strong><code>中间类继承</code>：直接更改当前对象的proto指向一个类的原型，那么这个对象就可以使用原型上的方法。</strong></li>
-<li><strong><code>call组合继承</code>：继承的目的，让类a产生的实例可以使用类b的私有属性</strong></li>
-<li><strong><code>寄生组合继承</code>：通过call继承了私有属性，结合object.create（）他会创建一个空对象，并让这个空对象指向了传进来的第一个参数，让他指向被继承者的原型</strong></li>
-</ul>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-      
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-字符串的13个方法" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2018/06/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%8413%E4%B8%AA%E6%96%B9%E6%B3%95/" class="article-date">
-  	<time datetime="2018-06-05T12:30:08.739Z" itemprop="datePublished">2018-06-05</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%8413%E4%B8%AA%E6%96%B9%E6%B3%95/">
-        字符串的13个方法
-        
-      </a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="字符串的方法"><a href="#字符串的方法" class="headerlink" title="字符串的方法"></a>字符串的方法</h3><ul>
-<li>1.touppercase<br>把小写字母转成大写；</li>
-<li>2.tolowercasr<br>把大写字母转成小写字母；</li>
-<li>3.chart<br>通过索引获取对应字符</li>
-<li>4.charcodeat<br>通过索引获取对应的字符，根据编码值去输出</li>
-<li>5.substr<br>字符串的截取（m，n）从m开始截取，截取n个字符</li>
-<li>6.subtring<br>从索引m开始，截取到索引n，但是不包括索引n<br>如果m&lt;n;那么不包括n 如果 m&gt;n 不包括m；如果n是负数，直接截取到开头</li>
-<li>7.slice<br>如果是负数，需要将其转成正数。用法差不多和substring。他可以截取负数<br>length+负数去转变</li>
-<li>8.indexof<br>返回字符在字符串中第一次出现的位置：入伙不存在，返回-1</li>
-<li>9.lastindexof<br>返回字符在字符串中最后一次出现的位置：入伙不存在，返回-1</li>
-<li>10.concat<br>字符串的拼接</li>
-<li>11.split<br>按照特定的字符把字符串分割成数组中的每一项，返回一个数组，如果里面是,就改成数组</li>
-<li>12.replace<br>替换；replace（老字符串，新字符串）</li>
-<li>13.trim<br>去左右空格（right）（left）</li>
-</ul>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-      
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &amp;raquo;</a>
@@ -864,7 +871,7 @@
   <div class="outer">
     <div id="footer-info">
       <div class="footer-left">
-        &copy; 2020 纪安
+        &copy; 2021 纪安
       </div>
         <div class="footer-right">
           <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/smackgg/hexo-theme-smackdown" target="_blank">Smackdown</a>
